@@ -1,37 +1,46 @@
-# ─────────────────────────────
-# Brain Shell
-# ─────────────────────────────
+# =========================
+# Local backups
+# =========================
 
-# User generated data
-src/user_data/
+backups/
 
-# Runtime/cache
+# Python backups / experiments
+src/scripts/*backup*.py
+src/scripts/*stable*.py
+src/scripts/*before*.py
+
+# QML backups
+*.backup.qml
+*.qml.backup
+
+
+# =========================
+# Runtime files
+# =========================
+
 *.log
 *.cache
-.cache/
 
-# Qt/QML cache
-.qmlcache
 
+# =========================
 # Temporary files
-*.tmp
-*.bak
+# =========================
+
+/tmp/
+
+
+# =========================
+# Editor files
+# =========================
+
 *.swp
+*.swo
 *~
 
-# Backup configs
-*.backup
-*.old
 
-# Build artifacts
-build/
-dist/
+# =========================
+# OS files
+# =========================
 
-# Python cache
-__pycache__/
-*.pyc
-
-# Editor files
-.vscode/
-.idea/
-config/profile.json
+.DS_Store
+Thumbs.db

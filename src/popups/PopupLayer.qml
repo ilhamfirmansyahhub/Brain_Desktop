@@ -64,4 +64,5 @@ Item {
     }
 
     NetworkPopup {}
+    BrainSearch {}
 }

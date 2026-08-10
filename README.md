@@ -326,3 +326,19 @@ LICENSE
 ```
 
 for full license information.
+
+## Brain Search KRunner Mode
+
+Brain Shell includes a KRunner-like application launcher.
+
+Current stable features:
+
+- Desktop keyboard trigger
+- Application search
+- Quickshell popup
+- Hyprland integration
+- evdev keyboard listener
+- systemd user service
+
+Stable since:
+2026-08-10

@@ -288,12 +288,50 @@ QtObject {
         }
     }
 
-    property var focusMode: IpcHandler {
-        target: "focus-toggle"
-        function toggle() {
-            root.focusToggleRequested()
-        }
-    }
     
-    signal focusToggleRequested()
+property var focusMode: IpcHandler {
+
+    target: "focus-toggle"
+
+    function toggle() {
+
+        root.focusToggleRequested()
+
+    }
+
+}
+
+
+signal focusToggleRequested()
+
+
+
+property var brainSearch: IpcHandler {
+
+    target: "brain-search"
+
+
+    function toggle() {
+
+        if (BrainSearchService.open) {
+
+            BrainSearchService.hide()
+
+        } else {
+
+            BrainSearchService.show()
+
+        }
+
+    }
+
+
+    function type(text: string) {
+
+        BrainSearchService.type(text)
+
+    }
+
+}
+
 }

@@ -28,6 +28,8 @@ ShellRoot {
                 // Dismisses all popups on click-outside or Escape
                 PopupDismiss { screen: modelData }
 
+                BrainSearch {}
+
                 // GPU mode change confirmation modal
                 ConfirmDialog { screen: modelData }
 
