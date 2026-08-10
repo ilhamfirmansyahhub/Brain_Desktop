@@ -4,14 +4,30 @@
 
 backups/
 
-# Python backups / experiments
+
+# =========================
+# Python backup / experiment files
+# =========================
+
 src/scripts/*backup*.py
 src/scripts/*stable*.py
 src/scripts/*before*.py
 
-# QML backups
+
+# =========================
+# QML backup files
+# =========================
+
 *.backup.qml
 *.qml.backup
+
+
+# =========================
+# BrainSearch local backups
+# =========================
+
+src/popups/*.before-*
+src/popups/*.navigation-*
 
 
 # =========================
@@ -39,7 +55,7 @@ src/scripts/*before*.py
 
 
 # =========================
-# OS files
+# OS generated files
 # =========================
 
 .DS_Store
