@@ -8,6 +8,8 @@ PanelWindow {
 
     id: root
 
+    property int selectedIndex: 0
+
 
     visible: BrainSearchService.open
 
@@ -26,6 +28,7 @@ PanelWindow {
 
 
     WlrLayershell.layer: WlrLayer.Overlay
+
 
     WlrLayershell.keyboardFocus:
         visible
@@ -109,10 +112,13 @@ PanelWindow {
 
                 height: 46
 
+
                 radius: 12
 
 
-                color: Qt.rgba(1,1,1,0.06)
+                color:
+                    Qt.rgba(1,1,1,0.06)
+
 
 
                 TextInput {
@@ -134,31 +140,68 @@ PanelWindow {
                     font.pixelSize: 15
 
 
+
                     onTextChanged: {
 
                         BrainSearchService.query = text
 
+                        root.selectedIndex = 0
+
+                    }
+
+
+
+                    Keys.onDownPressed: {
+
+                        if(
+                            root.selectedIndex <
+                            BrainSearchService.results.length - 1
+                        ){
+
+                            root.selectedIndex++
+
+                        }
+
                     }
 
 
-                    Keys.onEscapePressed: {
 
-                        BrainSearchService.hide()
+                    Keys.onUpPressed: {
+
+                        if(
+                            root.selectedIndex > 0
+                        ){
+
+                            root.selectedIndex--
+
+                        }
 
                     }
+
 
 
                     Keys.onReturnPressed: {
+
 
                         if(
                             BrainSearchService.results.length > 0
                         ){
 
                             BrainSearchService.launch(
-                                BrainSearchService.results[0].exec
+                                BrainSearchService
+                                .results[root.selectedIndex]
+                                .exec
                             )
 
                         }
+
+                    }
+
+
+
+                    Keys.onEscapePressed: {
+
+                        BrainSearchService.hide()
 
                     }
 
@@ -170,8 +213,11 @@ PanelWindow {
 
             ListView {
 
+                id: list
+
 
                 width: parent.width
+
 
                 height: 300
 
@@ -184,10 +230,16 @@ PanelWindow {
 
 
 
+                currentIndex:
+                    root.selectedIndex
+
+
+
                 delegate: Rectangle {
 
 
-                    width: parent.width
+                    width: list.width
+
 
                     height: 44
 
@@ -195,15 +247,39 @@ PanelWindow {
                     radius: 10
 
 
+
                     color:
-                        index === 0
+
+                        index === root.selectedIndex
+
                         ? Qt.rgba(
                             Theme.active.r,
                             Theme.active.g,
                             Theme.active.b,
                             0.15
                           )
+
                         : "transparent"
+
+
+
+                    MouseArea {
+
+                        anchors.fill: parent
+
+
+                        onClicked: {
+
+                            root.selectedIndex = index
+
+
+                            BrainSearchService.launch(
+                                modelData.exec
+                            )
+
+                        }
+
+                    }
 
 
 
@@ -211,6 +287,7 @@ PanelWindow {
 
 
                         anchors.fill: parent
+
 
                         anchors.margins: 10
 
@@ -223,7 +300,9 @@ PanelWindow {
 
                             text:"󰣇"
 
-                            color:Theme.active
+                            color:
+                                Theme.active
+
 
                             font.pixelSize:16
 
@@ -233,11 +312,17 @@ PanelWindow {
 
                         Text {
 
-                            text:modelData.name
 
-                            color:Theme.text
+                            text:
+                                modelData.name
+
+
+                            color:
+                                Theme.text
+
 
                             font.pixelSize:14
+
 
                         }
 
@@ -252,20 +337,23 @@ PanelWindow {
     }
 
 
-onVisibleChanged: {
 
-    if (visible) {
+    onVisibleChanged: {
 
-        Qt.callLater(function(){
+        if(visible){
 
-            search.text = ""
+            Qt.callLater(function(){
 
-            search.forceActiveFocus()
+                search.text = ""
 
-        })
+                root.selectedIndex = 0
+
+                search.forceActiveFocus()
+
+            })
+
+        }
 
     }
-
-}
 
 }
