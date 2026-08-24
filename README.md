@@ -15,8 +15,8 @@ Brain Desktop is designed to sit alongside an existing Hyprland setup rather tha
 - Multi-monitor Quickshell support
 - Portable per-user installation
 - Automatic backups of an existing Brain Desktop config
-- **No automatic repository updater**
 - Curated application launcher filtering
+- Fixed, self-contained configuration
 
 ## Installation
 
@@ -40,7 +40,7 @@ The installer:
 5. Installs Brain keybind compatibility files under `~/.config/Brain_Shell`.
 6. Adds Brain keybinds to the existing Hyprland config without replacing it.
 7. Creates and enables `brain-desktop.service` for automatic startup.
-8. Validates that the installed shell contains no auto-update code.
+8. Validates the installed shell before finishing.
 
 The installer is intentionally run as the normal user. It uses `sudo` only for system package and service operations.
 
@@ -98,17 +98,9 @@ Qt / Qt6 development utilities
 
 These packages are **not uninstalled**; only their launcher entries are filtered.
 
-## Auto-update
+## Fixed configuration
 
-Brain Desktop does not contain an automatic repository updater. The update service and update popup are removed from the runtime shell.
-
-To update the project manually:
-
-```bash
-git -C /path/to/Brain_Desktop pull
-```
-
-Then reinstall/redeploy the shell when needed.
+Brain Desktop is shipped as a fixed configuration snapshot. The runtime does not include an updater, update service, or update notification system. Its configuration is kept intentionally unchanged so the installed desktop remains consistent with this build.
 
 ## Backups
 
@@ -119,14 +111,6 @@ The installer creates a timestamped backup under:
 ```
 
 It does not replace the user's Hyprland configuration wholesale.
-
-## Development
-
-The active development branch is:
-
-```text
-brain-desktop
-```
 
 ## License
 
