@@ -14,14 +14,13 @@ Item {
     DiskService        { id: disk;    active: root.visible }
 
     // Read-only GPU status for the iGPU/dGPU statistics.
-    EnvyControlService { id: envy }
 
     CpuFreqService     { id: cpuFreq }
 
     GpuService {
         id:       gpu
         active:   root.visible
-        envyMode: envy.currentMode
+        envyMode: "discrete"
     }
 
     Column {
