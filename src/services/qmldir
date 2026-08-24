@@ -6,7 +6,6 @@ AudioControl AudioControl.qml
 MemService ./system/MemService.qml
 NetService ./system/NetService.qml
 GpuService ./system/GpuService.qml
-EnvyControlService ./system/EnvyControlService.qml
 CpuService ./system/CpuService.qml
 CpuFreqService ./system/CpuFreqService.qml
 DiskService ./system/DiskService.qml
