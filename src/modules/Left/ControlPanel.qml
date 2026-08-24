@@ -1,13 +1,29 @@
 import QtQuick
+import Quickshell
+import Quickshell.Io
 import "../../components"
 import "../../"
 
 IconBtn {
-		text: "" 
-		textColor: "#1793d1"
-		onClicked: {
-        var next = !Popups.archMenuOpen
+    text: ""
+    textColor: "#1793d1"
+
+    Process {
+        id: launcher
+        command: [
+            "qs",
+            "ipc",
+            "-p",
+            Quickshell.shellDir,
+            "call",
+            "dashboard-launcher",
+            "toggle"
+        ]
+        running: false
+    }
+
+    onClicked: {
         Popups.closeAll()
-        Popups.archMenuOpen = next
+        launcher.running = true
     }
 }
