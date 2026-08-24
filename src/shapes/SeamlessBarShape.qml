@@ -86,11 +86,6 @@ Canvas {
 
         ctx.arcTo(centerEnd,h,centerEnd,h-r,r)
 
-        ctx.lineTo(centerEnd,h-r)
-
-        ctx.arcTo(centerEnd,h,centerEnd+r,h,r)
-
-
         ctx.lineTo(centerEnd,b+r)
 
         ctx.arcTo(centerEnd,b,centerEnd+r,b,r)
