@@ -18,14 +18,8 @@ Canvas {
     property int topBorderWidth: Theme.borderWidth
 
 
-    property color color:
-    
-        Qt.rgba(
-            Theme.background.r,
-            Theme.background.g,
-            Theme.background.b,
-            1
-        )
+    // Brain Desktop uses a true-black bar regardless of matugen/theme cache.
+    property color color: "#000000"
 
 
 
@@ -91,6 +85,11 @@ Canvas {
         ctx.lineTo(centerEnd-r,h)
 
         ctx.arcTo(centerEnd,h,centerEnd,h-r,r)
+
+        ctx.lineTo(centerEnd,h-r)
+
+        ctx.arcTo(centerEnd,h,centerEnd+r,h,r)
+
 
         ctx.lineTo(centerEnd,b+r)
 
