@@ -12,8 +12,9 @@ import Quickshell.Io
 QtObject {
     id: root
 
-    // ── Parsed colors (with fallbacks matching original palette) ──────────────
-    property color background: "#1a282a"
+    // ── Parsed colors ────────────────────────────────────────────────────────
+    // Brain Desktop uses a true black background regardless of matugen output.
+    property color background: "#000000"
     property color active:     "#a6d0f7"
     property color text:       "#cdd6f4"
     property color subtext:    "#94e2d5"
@@ -46,7 +47,8 @@ QtObject {
         if (!raw || raw.trim() === "") return
         try {
             var obj = JSON.parse(raw)
-            if (obj.background) root.background = obj.background
+            // Keep the Brain Desktop background explicitly black.
+            root.background = "#000000"
             if (obj.active)     root.active     = obj.active
             if (obj.text)       { root.text = obj.text; root.icon = obj.text }
             if (obj.subtext)    root.subtext    = obj.subtext
