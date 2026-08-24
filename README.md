@@ -1,344 +1,135 @@
-# Brain Shell
+# Brain Desktop
 
 A modular Quickshell/QML desktop shell for Hyprland.
 
-Brain Shell provides a modern Wayland desktop experience with customizable panels, dashboards, widgets, system controls, and automation tools.
+Brain Desktop is designed to sit alongside an existing Hyprland setup rather than replacing it. The installer deploys the shell to the current user, creates a user-level systemd service, and adds Brain's keybind include without overwriting the user's Hyprland configuration.
 
-This repository is a customized fork focused on:
+## Features
 
-- CachyOS / Arch Linux support
-- Automated desktop configuration deployment
-- Hyprland environment setup
-- Backup and restore workflow
-- Easy installation
-- Personal Hyprland rice deployment
+- Top desktop bar and dashboard UI
+- Brain application launcher
+- Dashboard, notifications, clipboard, audio, network, wallpaper and recording controls
+- Click-outside / click-to-close popup behavior
+- `Super+Space` Brain launcher shortcut
+- `Alt+F9` screen-recording control
+- Multi-monitor Quickshell support
+- Portable per-user installation
+- Automatic backups of an existing Brain Desktop config
+- **No automatic repository updater**
+- Curated application launcher filtering
 
----
+## Installation
 
-# Screenshots
+### Arch Linux / Arch-based distributions
 
-Screenshots will be added soon.
-
----
-
-# Installation
-
-## Automatic Installation
-
-Run:
+Run the installer from a cloned repository:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/KendrickMathers/Brain_Shell/refs/heads/brain-desktop/install.sh | bash
-```
-
-The installer will:
-
-- Check system compatibility
-- Verify dependencies
-- Backup existing configurations
-- Install required packages
-- Deploy Brain Shell configuration
-- Install Hyprland configuration
-- Enable systemd user services
-- Initialize wallpaper directories
-
-After installation, restart Hyprland.
-
----
-
-# Manual Installation
-
-Clone the repository:
-
-```bash
-git clone https://github.com/KendrickMathers/Brain_Shell.git
-```
-
-Enter directory:
-
-```bash
-cd Brain_Shell
-```
-
-Run installer:
-
-```bash
+git clone -b brain-desktop https://github.com/ilhamfirmansyahhub/Brain_Desktop.git
+cd Brain_Desktop
 chmod +x install.sh
 ./install.sh
 ```
 
----
+The installer:
 
-# Supported Systems
+1. Checks for an Arch-based system and Hyprland.
+2. Installs the runtime packages used by Brain Desktop.
+3. Backs up an existing Brain Desktop configuration.
+4. Installs the shell to `~/.config/quickshell/brain-desktop`.
+5. Installs Brain keybind compatibility files under `~/.config/Brain_Shell`.
+6. Adds Brain keybinds to the existing Hyprland config without replacing it.
+7. Creates and enables `brain-desktop.service` for automatic startup.
+8. Validates that the installed shell contains no auto-update code.
 
-Currently supported:
+The installer is intentionally run as the normal user. It uses `sudo` only for system package and service operations.
 
-- Arch Linux
-- CachyOS
-- EndeavourOS
-- Garuda Linux
+## Requirements
 
-Other Arch-based distributions may work but are not officially tested.
-
----
-
-# Requirements
-
-## Desktop Environment
-
+- Arch Linux or an Arch-based distribution
 - Hyprland
-- Wayland session
+- Wayland
 - Quickshell
 
-## System Components
+The installer installs the main runtime dependencies automatically.
 
-- Qt6
-- PipeWire
-- WirePlumber
-- NetworkManager
-- BlueZ Bluetooth stack
-
-## Utilities
-
-- brightnessctl
-- playerctl
-- mpv-mpris
-- cava
-- wf-recorder
-- slurp
-- wl-clipboard
-- imagemagick
-- wtype
-
----
-
-# Features
-
-## Desktop Shell
-
-- Modern QML interface
-- Customizable panels
-- Dashboard system
-- Popup system
-- Modular architecture
-
-## System Controls
-
-- Audio control
-- Network management
-- Bluetooth management
-- Notification center
-- Clipboard manager
-- Power menu
-- System information
-
-## Wallpaper System
-
-- Image wallpaper support
-- Video wallpaper support
-- Wallpaper restore system
-- Wallpaper directory management
-
-## Customization
-
-- Dynamic colors
-- Configurable keybinds
-- Hyprland integration
-- User configuration deployment
-
----
-
-# Configuration System
-
-Brain Shell includes a configuration deployment system.
-
-Structure:
+## Runtime paths
 
 ```text
-configs/
-├── hypr/
-│   └── hyprland.lua
-│
-├── Brain_Shell/
-│   ├── Brain_ShellKeybinds.lua
-│   ├── Brain_ShellKeybinds.conf
-│   └── colors.conf
-│
-└── systemd/
-    └── brainshell.service
+~/.config/quickshell/brain-desktop/
+~/.config/Brain_Shell/
+~/.config/systemd/user/brain-desktop.service
 ```
 
-The installer deploys:
+## Keybinds
+
+Default Brain bindings:
 
 ```text
-~/.config/
-├── hypr/
-├── Brain_Shell/
-└── systemd/user/
+Super + Space       Application launcher
+Super + D           Dashboard
+Super + Z           Kanban / tasks
+Super + C           Configuration
+Super + N           Notifications
+Super + W           Wallpaper
+Super + V           Clipboard
+Alt + F9            Screen recording
 ```
 
----
+Brain's shipped keybind file uses the current user's home directory and Quickshell's path-based IPC, so it does not contain a hard-coded username or installation path.
 
-# Backup System
+## Application launcher filtering
 
-Before modifying existing configurations, Brain Shell creates a backup:
+The launcher intentionally hides several utilities that are not useful in a typical Brain Desktop setup, including:
 
 ```text
-~/.config.backup-TIMESTAMP-Brain_Shell/
+Avahi browser utilities
+Caja/Nemo/Nautilus file-manager entries
+Hardware Locality lstopo
+MATE Color Selection
+Yazi
+xgps / xgpsspeed
+Rofi / Rofi Theme Selector
+Micro
+KWrite
+Neovim
+Qt / Qt6 development utilities
 ```
 
-This allows restoring the previous Hyprland configuration if needed.
+These packages are **not uninstalled**; only their launcher entries are filtered.
 
----
+## Auto-update
 
-# Installer Workflow
+Brain Desktop does not contain an automatic repository updater. The update service and update popup are removed from the runtime shell.
+
+To update the project manually:
+
+```bash
+git -C /path/to/Brain_Desktop pull
+```
+
+Then reinstall/redeploy the shell when needed.
+
+## Backups
+
+The installer creates a timestamped backup under:
 
 ```text
-install.sh
-    |
-    v
-Dependency Check
-    |
-    v
-System Detection
-    |
-    v
-Backup Existing Config
-    |
-    v
-Clone Repository
-    |
-    v
-Install Packages
-    |
-    v
-Deploy Configuration
-    |
-    v
-Enable Services
+~/.config.backup-TIMESTAMP-Brain_Desktop/
 ```
 
----
+It does not replace the user's Hyprland configuration wholesale.
 
-# Project Structure
+## Development
 
-```text
-Brain_Shell/
-├── configs/
-├── dots-extra/
-├── installer/
-├── scripts/
-├── src/
-├── install.sh
-├── shell.qml
-└── README.md
-```
-
----
-
-# Development
-
-Development branch:
+The active development branch is:
 
 ```text
 brain-desktop
 ```
 
-This branch contains:
+## License
 
-- Installer improvements
-- Configuration deployment
-- Desktop integration
-- Experimental features
+Brain Desktop is distributed under the MIT License.
 
-Stable releases will be merged into:
-
-```text
-main
-```
-
----
-
-# Keybinds
-
-Default keybinds can be configured through:
-
-```text
-~/.config/Brain_Shell/
-```
-
-Configuration files:
-
-```text
-Brain_ShellKeybinds.lua
-Brain_ShellKeybinds.conf
-```
-
----
-
-# Contributing
-
-Contributions are welcome.
-
-Before submitting changes:
-
-```bash
-git checkout -b feature/my-feature
-git commit -m "Add feature"
-git push
-```
-
-Then open a pull request.
-
----
-
-# Credits
-
-Originally created by:
-
-```text
-Venkat Saahit Kamu (Brainitech)
-```
-
-This fork contains additional modifications:
-
-- Brain Desktop installer workflow
-- Arch/CachyOS configuration deployment
-- Backup and restore system
-- Additional desktop integration
-
-Modifications by:
-
-```text
-KendrickMathers
-```
-
----
-
-# License
-
-Brain Shell is licensed under the MIT License.
-
-See:
-
-```text
-LICENSE
-```
-
-for full license information.
-
-## Brain Search KRunner Mode
-
-Brain Shell includes a KRunner-like application launcher.
-
-Current stable features:
-
-- Desktop keyboard trigger
-- Application search
-- Quickshell popup
-- Hyprland integration
-- evdev keyboard listener
-- systemd user service
-
-Stable since:
-2026-08-10
+See `LICENSE` for the full license text.
