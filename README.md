@@ -100,7 +100,7 @@ These packages are **not uninstalled**; only their launcher entries are filtered
 
 ## Fixed configuration
 
-Brain Desktop is shipped as a fixed configuration snapshot. The runtime does not include an updater, update service, or update notification system. Its configuration is kept intentionally unchanged so the installed desktop remains consistent with this build.
+Brain Desktop is shipped as a fixed configuration snapshot. The runtime is intentionally kept self-contained so the installed desktop remains consistent with this build.
 
 ## Backups
 
