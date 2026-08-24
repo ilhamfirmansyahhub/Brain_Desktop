@@ -6,7 +6,6 @@ import "./src/"
 
 ShellRoot {
     // Force-instantiate lazy singletons that need startup behavior
-    property var _keybinds: KeybindService
     property var _ipc: IpcManager
 
     Variants {
