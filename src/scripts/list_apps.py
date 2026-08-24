@@ -1,6 +1,25 @@
 #!/usr/bin/env python3
 import os, json, re, configparser
 
+HIDDEN_DESKTOP_FILES = {
+    "avahi-discover.desktop",
+    "bssh.desktop",
+    "bvnc.desktop",
+    "caja-file-management-properties.desktop",
+    "nemo.desktop",
+    "org.gnome.Nautilus.desktop",
+    "lstopo.desktop",
+    "mate-color-select.desktop",
+    "yazi.desktop",
+    "xgps.desktop",
+    "xgpsspeed.desktop",
+    "rofi.desktop",
+    "rofi-theme-selector.desktop",
+}
+
+HIDDEN_APP_NAMES = {"Micro", "KWrite", "Neovim"}
+HIDDEN_APP_PREFIXES = ("Qt ", "Qt6 ")
+
 def main():
     dirs = [
         "/usr/share/applications",
@@ -12,6 +31,8 @@ def main():
         if not os.path.isdir(d):
             continue
         for fname in sorted(os.listdir(d)):
+            if fname in HIDDEN_DESKTOP_FILES:
+                continue
             if not fname.endswith(".desktop") or fname in seen:
                 continue
             seen.add(fname)
@@ -26,6 +47,9 @@ def main():
                 if de.get("Hidden",    "false").lower() == "true":   continue
 
                 name  = de.get("Name", "").strip()
+                if name in HIDDEN_APP_NAMES or name.startswith(HIDDEN_APP_PREFIXES):
+                    continue
+
                 exec_ = re.sub(r"%[a-zA-Z]", "", de.get("Exec", "")).strip()
                 if not name or not exec_:
                     continue
