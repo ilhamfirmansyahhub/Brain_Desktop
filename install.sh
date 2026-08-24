@@ -1,193 +1,141 @@
-#!/bin/bash
-# ─────────────────────────────────────────────────────────────────────────────
-#  Brain Shell — Main Installer
-#  github.com/KendrickMathers/Brain_Shell  v0.1.0
-# ─────────────────────────────────────────────────────────────────────────────
-# Hesitation is Defeat — Isshin Ashina
-set -eo pipefail
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+#!/usr/bin/env bash
+# Brain Desktop — portable Arch/Hyprland installer
+set -euo pipefail
 
-# ── Colors ────────────────────────────────────────────────────────────────────
-RED='\033[0;31m';   GREEN='\033[0;32m';  YELLOW='\033[1;33m'
-BLUE='\033[0;34m';  CYAN='\033[0;36m';   BOLD='\033[1m'
-DIM='\033[2m';      NC='\033[0m'
-
-# ── Logging ───────────────────────────────────────────────────────────────────
-log_info()  { echo -e "  ${BLUE}·${NC} $1"; }
-log_ok()    { echo -e "  ${GREEN}✓${NC} $1"; }
-log_warn()  { echo -e "  ${YELLOW}⚠${NC} $1"; }
-log_error() { echo -e "  ${RED}✗${NC} $1" >&2; }
-die()       { echo ""; log_error "$1"; exit 1; }
-
-TOTAL_STEPS=5
-step() {
-    echo ""
-    echo -e "${BOLD}${CYAN}  [$1/$TOTAL_STEPS]  $2${NC}"
-    echo -e "  ${DIM}$(printf '%.0s─' {1..50})${NC}"
-}
-
-# ── Trap ──────────────────────────────────────────────────────────────────────
-trap 'echo ""; log_error "Installation aborted unexpectedly (line $LINENO)."; exit 1' ERR
-
-# ── Banner ────────────────────────────────────────────────────────────────────
-clear
-echo -e "${BOLD}"
-echo " ███████████  ███████████     █████████   █████ ██████   █████     █████████  █████   █████ ██████████ █████       █████      "
-echo "▒▒███▒▒▒▒▒███▒▒███▒▒▒▒▒███   ███▒▒▒▒▒███ ▒▒███ ▒▒██████ ▒▒███     ███▒▒▒▒▒███▒▒███   ▒▒███ ▒▒███▒▒▒▒▒█▒▒███       ▒▒███      "
-echo " ▒███    ▒███ ▒███    ▒███  ▒███    ▒███  ▒███  ▒███▒███ ▒███    ▒███    ▒▒▒  ▒███    ▒███  ▒███  █ ▒  ▒███        ▒███      "
-echo " ▒██████████  ▒██████████   ▒███████████  ▒███  ▒███▒▒███▒███    ▒▒█████████  ▒███████████  ▒██████    ▒███        ▒███      "
-echo " ▒███▒▒▒▒▒███ ▒███▒▒▒▒▒███  ▒███▒▒▒▒▒███  ▒███  ▒███ ▒▒██████     ▒▒▒▒▒▒▒▒███ ▒███▒▒▒▒▒███  ▒███▒▒█    ▒███        ▒███      "
-echo " ▒███    ▒███ ▒███    ▒███  ▒███    ▒███  ▒███  ▒███  ▒▒█████     ███    ▒███ ▒███    ▒███  ▒███ ▒   █ ▒███      █ ▒███      █"
-echo " ███████████  █████   █████ █████   █████ █████ █████  ▒▒█████   ▒▒█████████  █████   █████ ██████████ ███████████ ███████████"
-echo -e "${NC}"
-echo -e "  ${DIM}v0.1.0  ·  github.com/KendrickMathers/Brain_Shell${NC}"
-echo ""
-
-
-# ══════════════════════════════════════════════════════════════════════════════
-# STEP 1 — Pre-Flight Checks
-# ══════════════════════════════════════════════════════════════════════════════
-step 1 "Pre-Flight Checks"
-
-# OS
-[[ "$OSTYPE" =~ ^linux ]] || die "This installer only supports Linux."
-log_ok "Linux confirmed"
-
-# Distro
-DISTRO_TYPE=""
-if [[ -f /etc/os-release ]]; then
-    # shellcheck disable=SC1091
-    source /etc/os-release
-    case "${ID:-}" in
-        arch|manjaro|garuda|cachyos|endeavouros)
-            log_ok "Distro: ${ID} (Arch-based)"
-            DISTRO_TYPE="arch"
-            ;;
-        nixos)
-            log_ok "Distro: NixOS"
-            DISTRO_TYPE="nix"
-            ;;
-        *)
-            die "Unsupported distro: ${ID:-unknown}. Supported: Arch-based, NixOS."
-            ;;
-    esac
-else
-    die "Cannot detect distro — /etc/os-release not found."
-fi
-
-# Dependency check
-
-CHECKER="$SCRIPT_DIR/installer/check-dependencies.sh"
-
-if [[ -f "$CHECKER" ]]; then
-     chmod +x "$CHECKER"
-     bash "$CHECKER"
-else
-     log_warn "Dependency checker not found."
-fi
-
-# Hyprland session (warn only, don't abort)
-if [[ -z "${HYPRLAND_INSTANCE_SIGNATURE:-}" ]]; then
-    log_warn "Not running inside a Hyprland session."
-    log_info "Changes will apply after you restart Hyprland."
-else
-    log_ok "Hyprland session active"
-fi
-
-# Hyprland config
+REPO_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+QS_DIR="$HOME/.config/quickshell/brain-desktop"
+BRAIN_CFG="$HOME/.config/Brain_Shell"
+USER_SYSTEMD="$HOME/.config/systemd/user"
+SERVICE="$USER_SYSTEMD/brain-desktop.service"
 HYPR_DIR="$HOME/.config/hypr"
-HYPRLAND_CONF=""
-CONFIG_TYPE=""
 
-# Hyprland loads .lua first when both exist; mirror that priority here so
-# the installer always targets the file Hyprland is actually reading.
+RED='\033[0;31m'; GREEN='\033[0;32m'; YELLOW='\033[1;33m'; CYAN='\033[0;36m'; BOLD='\033[1m'; NC='\033[0m'
+info(){ echo -e "  ${CYAN}·${NC} $1"; }
+ok(){ echo -e "  ${GREEN}✓${NC} $1"; }
+warn(){ echo -e "  ${YELLOW}⚠${NC} $1"; }
+die(){ echo -e "  ${RED}✗${NC} $1" >&2; exit 1; }
+
+[[ "${EUID}" -ne 0 ]] || die "Run this installer as your normal user, not root."
+[[ -f /etc/os-release ]] || die "Cannot detect Linux distribution."
+source /etc/os-release
+[[ "${ID:-}" == "arch" || "${ID_LIKE:-}" == *arch* ]] || die "Brain Desktop currently supports Arch-based systems."
+command -v hyprctl >/dev/null 2>&1 || die "Hyprland is required. Start/setup Hyprland first."
+command -v pacman >/dev/null 2>&1 || die "pacman is required."
+
+BACKUP="$HOME/.config.backup-$(date +%Y%m%d_%H%M%S)-Brain_Desktop"
+mkdir -p "$BACKUP" "$USER_SYSTEMD"
+
+if [[ -d "$QS_DIR" ]]; then
+    cp -a "$QS_DIR" "$BACKUP/brain-desktop" && ok "Backed up existing Brain Desktop config"
+fi
+
+info "Installing runtime dependencies..."
+sudo pacman -Syu --needed --noconfirm \
+    quickshell \
+    qt6-base qt6-declarative qt6-multimedia qt6-5compat \
+    pipewire pipewire-pulse wireplumber \
+    playerctl mpv-mpris \
+    networkmanager bluez bluez-utils \
+    brightnessctl upower libnotify polkit \
+    python wl-clipboard slurp xdg-user-dirs \
+    wf-recorder cava cliphist \
+    awww matugen \
+    hypridle hyprlock hyprpolkitagent hyprsunset \
+    xdg-desktop-portal-hyprland \
+    ttf-jetbrains-mono-nerd ttf-nerd-fonts-symbols-common
+ok "Dependencies installed"
+
+rm -rf "$QS_DIR"
+mkdir -p "$QS_DIR"
+cp -a "$REPO_DIR/shell.qml" "$REPO_DIR/src" "$QS_DIR/"
+chmod +x "$QS_DIR"/src/scripts/*.sh "$QS_DIR"/src/scripts/*.py 2>/dev/null || true
+ok "Brain Desktop installed to $QS_DIR"
+
+mkdir -p "$BRAIN_CFG/src/user_data" "$HOME/.cache/brain-shell"
+cp -a "$REPO_DIR/configs/Brain_Shell/"*.lua "$BRAIN_CFG/" 2>/dev/null || true
+cp -a "$REPO_DIR/configs/Brain_Shell/"*.conf "$BRAIN_CFG/" 2>/dev/null || true
+printf '{"configProvider":"lua"}\n' > "$BRAIN_CFG/src/user_data/config_Provider.json"
+printf '{}\n' > "$BRAIN_CFG/src/user_data/keybinds.json"
+printf '{}\n' > "$HOME/.cache/brain-shell/colors.json"
+rm -f "$BRAIN_CFG/src/user_data/update_prefs.json"
+ok "Brain compatibility config installed"
+
+if [[ -d "$REPO_DIR/src/assets/wallpapers" ]]; then
+    mkdir -p "$HOME/Pictures/Wallpapers"
+    cp -an "$REPO_DIR/src/assets/wallpapers/." "$HOME/Pictures/Wallpapers/" || true
+    ok "Wallpapers installed"
+fi
+
+KEY_LUA="$BRAIN_CFG/Brain_ShellKeybinds.lua"
+KEY_CONF="$BRAIN_CFG/Brain_ShellKeybinds.conf"
+MARKER="Brain_Desktop_Keybinds"
+
 if [[ -f "$HYPR_DIR/hyprland.lua" ]]; then
-    HYPRLAND_CONF="$HYPR_DIR/hyprland.lua"
-    CONFIG_TYPE="lua"
-    if [[ -f "$HYPR_DIR/hyprland.conf" ]]; then
-        log_ok "Hyprland config: hyprland.lua  ${DIM}(hyprland.conf also present but ignored by Hyprland)${NC}"
+    HYPR="$HYPR_DIR/hyprland.lua"
+    if ! grep -qF "$MARKER" "$HYPR"; then
+        {
+            echo ""
+            echo "-- $MARKER"
+            printf 'dofile(os.getenv("HOME") .. "/.config/Brain_Shell/Brain_ShellKeybinds.lua")\n'
+        } >> "$HYPR"
+        ok "Brain keybinds included in hyprland.lua"
     else
-        log_ok "Hyprland config: hyprland.lua"
+        info "Brain keybind include already present"
     fi
 elif [[ -f "$HYPR_DIR/hyprland.conf" ]]; then
-    HYPRLAND_CONF="$HYPR_DIR/hyprland.conf"
-    CONFIG_TYPE="conf"
-    log_ok "Hyprland config: hyprland.conf"
-    log_warn "hyprland.conf support is deprecated as of 0.55 and will be removed in a future release."
-    log_info "Consider migrating to hyprland.lua — see https://wiki.hypr.land/Configuring/Start/"
+    HYPR="$HYPR_DIR/hyprland.conf"
+    if ! grep -qF "$MARKER" "$HYPR"; then
+        {
+            echo ""
+            echo "# $MARKER"
+            printf 'source = %s\n' "$KEY_CONF"
+        } >> "$HYPR"
+        ok "Brain keybinds included in hyprland.conf"
+    else
+        info "Brain keybind include already present"
+    fi
 else
-    die "No Hyprland config found in $HYPR_DIR. Set up Hyprland first."
+    warn "No Hyprland config found; keybinds were installed but not auto-included."
 fi
 
+cat > "$SERVICE" <<'EOF'
+[Unit]
+Description=Brain Desktop Top Shell
+After=graphical-session.target
+PartOf=graphical-session.target
 
-# ══════════════════════════════════════════════════════════════════════════════
-# STEP 2 — Backup
-# ══════════════════════════════════════════════════════════════════════════════
-step 2 "Backup"
+[Service]
+Type=simple
+ExecStart=/usr/bin/quickshell -c %h/.config/quickshell/brain-desktop
+Restart=on-failure
+RestartSec=2
 
-BACKUP_TS=$(date +%Y%m%d_%H%M%S)
-BACKUP_DIR="$HOME/.config.backup-${BACKUP_TS}-Brain_Shell"
-mkdir -p "$BACKUP_DIR"
+[Install]
+WantedBy=default.target
+EOF
 
-if [[ -d "$HYPR_DIR" ]]; then
-    cp -r "$HYPR_DIR" "$BACKUP_DIR/"
-    log_ok "Backed up: ~/.config/hypr → $BACKUP_DIR"
-else
-    log_warn "$HOME/.config/hypr not found — nothing to back up."
+systemctl --user daemon-reload
+systemctl --user enable --now brain-desktop.service
+ok "Brain Desktop service enabled"
+
+systemctl --user enable --now pipewire pipewire-pulse wireplumber 2>/dev/null || true
+sudo systemctl enable --now NetworkManager 2>/dev/null || true
+sudo systemctl enable --now bluetooth 2>/dev/null || true
+sudo systemctl enable --now upower 2>/dev/null || true
+
+[[ -f "$QS_DIR/shell.qml" ]] || die "Brain Desktop shell.qml was not installed."
+[[ -f "$QS_DIR/src/qmldir" ]] || die "Brain Desktop QML module file is missing."
+command -v quickshell >/dev/null 2>&1 || die "quickshell is not available in PATH."
+
+if grep -RniE 'UpdateService|UpdatePopup|autoUpdate' "$QS_DIR" 2>/dev/null; then
+    die "Auto-update references remain in the installed shell."
 fi
 
-
-# ══════════════════════════════════════════════════════════════════════════════
-# STEP 3 — Repository
-# ══════════════════════════════════════════════════════════════════════════════
-step 3 "Repository"
-
-REPO_PARENT="$HOME/.local/src"
-REPO_DIR="$REPO_PARENT/Brain_Shell"
-mkdir -p "$REPO_PARENT"
-
-if [[ -d "$REPO_DIR/.git" ]]; then
-    log_info "Existing clone found — updating..."
-    git -C "$REPO_DIR" fetch origin brain-desktop  2>/dev/null || true
-    git -C "$REPO_DIR" checkout brain-desktop 2>/dev/null || true
-    git -C "$REPO_DIR" pull origin brain-desktop 2>/dev/null || true
-    log_ok "Repository updated: $REPO_DIR"
-else
-    log_info "Cloning from GitHub..."
-    git clone -b brain-desktop https://github.com/KendrickMathers/Brain_Shell.git "$REPO_DIR"
-    log_ok "Repository cloned: $REPO_DIR"
-fi
-
-
-# ══════════════════════════════════════════════════════════════════════════════
-# STEP 4 — Distro-Specific Install
-# ══════════════════════════════════════════════════════════════════════════════
-step 4 "Distro-Specific Installation"
+ok "Validation passed"
 echo ""
-
-DISTRO_INSTALLER="$REPO_DIR/dots-extra/install-${DISTRO_TYPE}.sh"
-[[ -f "$DISTRO_INSTALLER" ]] || die "Distro installer not found: $DISTRO_INSTALLER"
-
-chmod +x "$DISTRO_INSTALLER"
-bash "$DISTRO_INSTALLER" "$HYPRLAND_CONF" "$BACKUP_DIR" "$CONFIG_TYPE"
-
-
-# ══════════════════════════════════════════════════════════════════════════════
-# STEP 5 — Done
-# ══════════════════════════════════════════════════════════════════════════════
-step 5 "Done"
-
+echo -e "${BOLD}Brain Desktop installation complete.${NC}"
+echo "Backup: $BACKUP"
+echo "Shell:  $QS_DIR"
+echo "Service: brain-desktop.service"
 echo ""
-log_ok "Brain Shell is installed."
-echo ""
-echo -e "  ${BOLD}Restart Hyprland to activate Brain Shell:${NC}"
-log_info "Log out and log back in  ${DIM}(recommended)${NC}"
-log_info "hyprctl dispatch exit"
-log_info "Ctrl+Alt+Q               ${DIM}(if configured)${NC}"
-echo ""
-echo -e "  ${BOLD}Paths:${NC}"
-log_info "Config:  ~/.config/Brain_Shell"
-log_info "Source:  $REPO_DIR"
-echo ""
-
-exit 0
+echo "Log out and back in if Hyprland does not immediately pick up the new keybind include."
