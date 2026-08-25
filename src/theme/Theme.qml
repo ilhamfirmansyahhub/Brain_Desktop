@@ -9,6 +9,7 @@ QtObject {
 
     property color background: Colors.background
     property color active: Colors.active
+    property color activeText: "#FFFFFF"
     property color text: Colors.text
     property color subtext: Colors.subtext
     property color icon: Colors.icon
