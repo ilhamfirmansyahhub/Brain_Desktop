@@ -1,0 +1,12 @@
+[Unit]
+Description=Brain Shell Keyboard Runner
+After=graphical-session.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 /home/brain/.local/src/Brain_Shell/src/scripts/brain_runner.py
+Restart=on-failure
+RestartSec=2
+
+[Install]
+WantedBy=default.target
