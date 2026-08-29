@@ -15,7 +15,7 @@ QtObject {
     // ── Parsed colors ────────────────────────────────────────────────────────
     // Brain Desktop uses a true black background regardless of matugen output.
     property color background: "#000000"
-    property color active:     "#a6d0f7"
+    property color active:     "#FFFFFF"
     property color text:       "#FFFFFF"
     property color subtext:    "#FFFFFF"
     property color icon:       "#FFFFFF"
@@ -47,12 +47,13 @@ QtObject {
         if (!raw || raw.trim() === "") return
         try {
             var obj = JSON.parse(raw)
-            // Keep the Brain Desktop background and primary text explicitly black/white.
+            // Keep Brain Desktop background and text colors explicitly black/white.
+            // Do not allow matugen's active color to recolor text elements.
             root.background = "#000000"
+            root.active = "#FFFFFF"
             root.text = "#FFFFFF"
             root.icon = "#FFFFFF"
             root.subtext = "#FFFFFF"
-            if (obj.active)     root.active     = obj.active
             if (obj.border)     root.border     = obj.border
             if (obj.iconFont)   root.iconFont   = obj.iconFont
         } catch (e) {
