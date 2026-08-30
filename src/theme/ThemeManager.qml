@@ -87,7 +87,13 @@ QtObject {
             id: "gnome",
             name: "GNOME",
             description: "Clean dark gray style"
+        },
+        {
+            id: "oxygen-dark",
+            name: "Oxygen Dark",
+            description: "KDE-inspired dark palette"
         }
+        
     ]
 
     function is(theme) {
@@ -137,6 +143,9 @@ QtObject {
 
         if (is("gnome"))
             return "#1e1e1e"
+            
+        if (is("oxygen-dark"))
+                return "#1b1e20"    
 
         return Colors.background
     }
@@ -166,6 +175,9 @@ QtObject {
         if (is("gnome"))
             return "#78aeed"
 
+        if (is("oxygen-dark"))
+                return "#3daee9"    
+
         return Colors.active
     }
 
@@ -193,6 +205,9 @@ QtObject {
 
         if (is("gnome"))
             return "#ffffff"
+
+        if (is("oxygen-dark"))
+                return "#f2f2f2"    
 
         return Colors.text
     }
@@ -222,6 +237,9 @@ QtObject {
         if (is("gnome"))
             return "#b8b8b8"
 
+        if (is("oxygen-dark"))
+                return "#b9bec2"    
+
         return Colors.subtext
     }
 
@@ -250,6 +268,9 @@ QtObject {
         if (is("gnome"))
             return "#ffffff"
 
+        if (is("oxygen-dark"))
+                return "#f2f2f2"    
+
         return Colors.icon
     }
 
@@ -277,6 +298,9 @@ QtObject {
 
         if (is("gnome"))
             return "#4a4a4a"
+
+        if (is("oxygen-dark"))
+                return "#4b5155"    
 
         return Colors.border
     }
@@ -312,6 +336,9 @@ QtObject {
         if (is("gnome"))
             return "#2a2a2a"
 
+        if (is("oxygen-dark"))
+                return "#25282a"    
+
         return Qt.rgba(1, 1, 1, 0.05)
     }
 
@@ -339,6 +366,9 @@ QtObject {
 
         if (is("gnome"))
             return "#353535"
+
+        if (is("oxygen-dark"))
+                return "#303437"    
 
         return Qt.rgba(1, 1, 1, 0.08)
     }
@@ -368,6 +398,9 @@ QtObject {
         if (is("blur"))
             return "#6f7885"
 
+        if (is("oxygen-dark"))
+                return "#858c91"    
+
         return "#808080"
     }
 
@@ -377,6 +410,9 @@ QtObject {
 
         if (is("blur"))
             return Qt.rgba(1, 1, 1, 0.08)
+
+        if (is("oxygen-dark"))
+                return Qt.rgba(0.24, 0.68, 0.92, 0.10)    
 
         return Qt.rgba(1, 1, 1, 0.07)
     }
@@ -403,6 +439,9 @@ QtObject {
         if (is("gnome"))
             return "#73d216"
 
+        if (is("oxygen-dark"))
+                return "#27ae60"    
+
         return "#a6e3a1"
     }
 
@@ -425,6 +464,9 @@ QtObject {
         if (is("gnome"))
             return "#f6d32d"
 
+        if (is("oxygen-dark"))
+                return "#fdbc4b"    
+
         return "#f5c47a"
     }
 
@@ -446,6 +488,9 @@ QtObject {
 
         if (is("gnome"))
             return "#ed333b"
+
+        if (is("oxygen-dark"))
+                return "#ed1515"    
 
         return "#f38ba8"
     }
@@ -475,6 +520,7 @@ QtObject {
         if (is("blur")) return 0.78
         if (is("gruvbox")) return 0.92
         if (is("gnome")) return 0.94
+        if (is("oxygen-dark")) return 0.94
         return 0.90
     }
 
@@ -487,6 +533,7 @@ QtObject {
         if (is("dracula")) return 18
         if (is("gnome")) return 14
         if (is("gruvbox")) return 12
+        if (is("oxygen-dark")) return 16
         return Metrics.blurRadius
     }
 
@@ -495,6 +542,7 @@ QtObject {
         if (is("blur")) return 0.26
         if (is("gruvbox")) return 0.08
         if (is("gnome")) return 0.06
+        if (is("oxygen-dark")) return 0.08
         return 0.12
     }
 
@@ -509,6 +557,7 @@ QtObject {
         if (is("gruvbox")) return 12
         if (is("gnome")) return 14
         if (is("catppuccin-mocha")) return 17
+        if (is("oxygen-dark")) return 14
         return Metrics.cornerRadius
     }
 
@@ -517,6 +566,7 @@ QtObject {
         if (is("blur")) return 18
         if (is("gruvbox")) return 12
         if (is("gnome")) return 13
+        if (is("oxygen-dark")) return 13
         return Metrics.notchRadius
     }
 
@@ -525,6 +575,7 @@ QtObject {
         if (is("blur")) return 18
         if (is("gruvbox")) return 12
         if (is("gnome")) return 14
+        if (is("oxygen-dark")) return 14
         return Metrics.wsRadius
     }
 
