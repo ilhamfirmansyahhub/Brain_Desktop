@@ -160,27 +160,6 @@ PanelWindow {
             }
         }
 
-        // ── Bottom border — centered 420px zone: wallpaper hover + tap ────────
-        Item {
-            visible:                  root.edge === "bottom"
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top:              parent.top
-            anchors.bottom:           parent.bottom
-            width:                    420
-
-            HoverHandler {
-                onHoveredChanged: Popups.wallpaperTriggerHovered = hovered
-            }
-
-            TapHandler {
-                onTapped: {
-                    var next = !Popups.wallpaperOpen
-                    Popups.closeAll()
-                    Popups.wallpaperOpen = next
-                }
-            }
-        }
-
         // ── Bottom border — right corner 80px zone: clipboard tap ─────────────
         Item {
             visible:        root.edge === "bottom"

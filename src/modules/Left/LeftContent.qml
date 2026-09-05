@@ -8,10 +8,12 @@ Row {
 	spacing: 5
 	// Note: Do NOT add anchors.centerIn: parent here. TopBar handles that.
 
-	// 1. Workspaces
-	Workspaces {}
+	// 1. Arch Icon (Power Menu Trigger)
+
+	// 2. Workspaces
+	Workspaces {} 
 	
-	// 2. LayoutDisplay
+	//3. LayoutDisplay
 	LayoutDisplayer {}
 
 }

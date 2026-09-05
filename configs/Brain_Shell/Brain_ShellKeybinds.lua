@@ -30,7 +30,6 @@ hl.bind("SUPER + C", hl.dsp.exec_cmd("qs ipc -p " .. shell .. " call dashboard-c
 -- Popups
 hl.bind("SUPER + ESCAPE", hl.dsp.exec_cmd("qs ipc -p " .. shell .. " call PowerMenu-toggle toggle"))
 hl.bind("SUPER + N", hl.dsp.exec_cmd("qs ipc -p " .. shell .. " call notification-toggle toggle"))
-hl.bind("SUPER + W", hl.dsp.exec_cmd("qs ipc -p " .. shell .. " call wallpaper-toggle toggle"))
 hl.bind("SUPER + V", hl.dsp.exec_cmd("qs ipc -p " .. shell .. " call clipboard-toggle toggle"))
 
 -- Network Tabs

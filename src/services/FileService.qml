@@ -33,9 +33,6 @@ QtObject {
         open(Quickshell.env("HOME") + "/.local/src/Brain_Shell")
     }
 
-    function wallpapers() {
-        open(Quickshell.env("HOME") + "/Pictures/Wallpapers")
-    }
 
     function github() {
         open("https://github.com/KendrickMathers/Brain_Shell")

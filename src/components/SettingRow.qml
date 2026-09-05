@@ -17,7 +17,7 @@ Rectangle {
 
     color: Theme.surface
 
-    border.width: 1
+    border.width: 0
     border.color: Theme.border
 
     RowLayout {

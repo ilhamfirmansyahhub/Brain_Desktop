@@ -29,7 +29,6 @@ Item {
     }
 
     // Bottom border → slides up
-    WallpaperPopup {}
 
     // Bottom-right corner → clipboard history + emoji
     // ClipboardPopup {}

@@ -542,14 +542,6 @@ StatCard {
     }
 
     Connections {
-        target: WallpaperService
-        function onWallpaperApplied(path) {
-            filterCheckProc.running = false
-            filterCheckProc.running = true
-        }
-    }
-
-    Connections {
         target: Popups
         function onDashboardOpenChanged() {
             if (!Popups.dashboardOpen) root.filterPickerOpen = false

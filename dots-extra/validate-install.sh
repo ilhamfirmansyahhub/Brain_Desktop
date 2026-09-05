@@ -103,12 +103,6 @@ check_command "wf-recorder"
 check_command "cava"
 
 echo ""
-echo "# WALLPAPER & THEMING"
-check_command "magick"
-check_optional "awww"
-check_optional "matugen"
-
-echo ""
 echo "# CLIPBOARD"
 check_command "wtype"
 check_optional "cliphist"

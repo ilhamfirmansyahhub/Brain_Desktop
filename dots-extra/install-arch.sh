@@ -230,9 +230,6 @@ PACMAN_DEPS=(
     # Screen recording
     wf-recorder cava
 
-    # Wallpaper / theming
-    imagemagick
-
     # Input simulation
     wtype
 
@@ -397,8 +394,6 @@ log_ok "config_Provider.json  →  $CONFIG_TYPE"
 log_info "Initializing cache directories..."
 mkdir -p "$HOME/.cache/brain-shell"
 touch "$HOME/.cache/brain-shell/colors.json"
-mkdir -p "$HOME/Pictures/Wallpapers"
-cp -n -r "$REPO_DIR/src/assets/wallpapers"/* "$HOME/Pictures/Wallpapers/" 2>/dev/null || true
 
 log_ok "Cache directories initialized"
 
@@ -416,8 +411,6 @@ CONFIG_DIR="$REPO_DIR/configs"
 mkdir -p "$HOME/.config/hypr"
 mkdir -p "$HOME/.config/Brain_Shell"
 mkdir -p "$HOME/.config/systemd/user"
-mkdir -p "$HOME/Pictures/Wallpapers/Images"
-mkdir -p "$HOME/Pictures/Wallpapers/Videos"
 
 if [[ -f "$CONFIG_DIR/hypr/hyprland.lua" ]]; then
     cp "$CONFIG_DIR/hypr/hyprland.lua" "$HOME/.config/hypr/"
@@ -455,7 +448,6 @@ DEFAULTS = {
     "dashboard-config":    {"mods": "SUPER",        "key": "C",      "label": "Dashboard: Config"},
     "PowerMenu-toggle":    {"mods": "SUPER",        "key": "ESCAPE", "label": "Power Menu"},
     "notification-toggle": {"mods": "SUPER",        "key": "N",      "label": "Notifications"},
-    "wallpaper-toggle":    {"mods": "SUPER",        "key": "W",      "label": "Wallpaper"},
     "clipboard-toggle":    {"mods": "SUPER",        "key": "V",      "label": "Clipboard"},
     "wifi-toggle":         {"mods": "SUPER + ALT",  "key": "W",      "label": "Network: Wi-Fi"},
     "bluetooth-toggle":    {"mods": "SUPER + ALT",  "key": "B",      "label": "Network: Bluetooth"},

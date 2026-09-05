@@ -13,8 +13,6 @@ mkdir -p \
     "$HOME_DIR/.config/hypr" \
     "$HOME_DIR/.config/Brain_Shell" \
     "$HOME_DIR/.config/systemd/user" \
-    "$HOME_DIR/Pictures/Wallpapers/Images" \
-    "$HOME_DIR/Pictures/Wallpapers/Videos"
 
 
 echo "[2/4] Installing Hyprland config..."

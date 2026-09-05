@@ -8,7 +8,7 @@ Brain Desktop is designed to sit alongside an existing Hyprland setup rather tha
 
 - Top desktop bar and dashboard UI
 - Brain application launcher
-- Dashboard, notifications, clipboard, audio, network, wallpaper and recording controls
+- Dashboard, notifications, clipboard, audio, network, recording controls
 - Click-outside / click-to-close popup behavior
 - `Super+Space` Brain launcher shortcut
 - `Alt+F9` screen-recording control
@@ -71,7 +71,6 @@ Super + D           Dashboard
 Super + Z           Kanban / tasks
 Super + C           Configuration
 Super + N           Notifications
-Super + W           Wallpaper
 Super + V           Clipboard
 Alt + F9            Screen recording
 ```

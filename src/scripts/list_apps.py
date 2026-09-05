@@ -35,6 +35,9 @@ HIDDEN_DESKTOP_FILES = {
     "com.shellyorg.shelly.desktop",
     "btop.desktop",
     "htop.desktop",
+    "compress-video.desktop",
+    "install-app.desktop",
+    "uuctl.desktop",
 }
 
 HIDDEN_APP_NAMES = {

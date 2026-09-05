@@ -256,15 +256,6 @@ QtObject {
         }
     }
 
-    property var wallpaper: IpcHandler {
-        target: "wallpaper-toggle"
-        function toggle() {
-            var next = !Popups.wallpaperOpen
-            Popups.closeAll()
-            Popups.wallpaperOpen = next
-        }
-    }
-
     property var screenRec: IpcHandler {
         target: "screenrec-on"
         function toggle() {

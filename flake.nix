@@ -53,7 +53,6 @@
           # Screen recording
           wf-recorder
 
-          # Wallpaper & theming
           imagemagick
           awww
           matugen

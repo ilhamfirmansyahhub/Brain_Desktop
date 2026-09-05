@@ -12,7 +12,6 @@ Item {
     readonly property var tabs: [
         { key: "appearance", icon: "󰏘", label: "Appearance" },
         { key: "themes",    icon: "󰉉", label: "Themes" },
-        { key: "wallpaper", icon: "󰉉", label: "Wallpaper" },
         { key: "keybinds",  icon: "󰌌", label: "Keybinds" }
     ]
 
@@ -29,7 +28,7 @@ Item {
 
             color: Qt.rgba(1, 1, 1, 0.04)
 
-            border.width: 1
+            border.width: 0
             border.color: Qt.rgba(1, 1, 1, 0.07)
 
             TabSwitcher {
@@ -63,9 +62,6 @@ Item {
 
                 case "themes":
                     return "ThemesPage.qml"
-
-                case "wallpaper":
-                    return "WallpaperPage.qml"
 
                 case "keybinds":
                     return "KeybindsPage.qml"

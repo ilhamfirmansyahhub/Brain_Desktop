@@ -18,7 +18,7 @@ QtObject {
     property color text:       "#FFFFFF"
     property color subtext:    "#FFFFFF"
     property color icon:       "#FFFFFF"
-    property color border:     "#ffffff"
+    property color border:     "transparent"
     property color iconFont:   "#2f8d97"
 
     // ── File watcher ──────────────────────────────────────────────────────────

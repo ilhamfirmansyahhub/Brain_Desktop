@@ -22,13 +22,8 @@
              ├─[0;38:5:245m415255 /usr/bin/hyprctl -j activeworkspace[0m
              └─[0;38:5:245m415256 /usr/bin/hyprctl activewindow -j[0m
 
-Aug 08 21:46:34 Ilham-PC quickshell[415022]:   WARN scene: @src/popups/WallpaperPopup.qml[204:13]: Unable to assign [undefined] to QString
-Aug 08 21:46:34 Ilham-PC quickshell[415022]:   WARN scene: @src/popups/WallpaperPopup.qml[587:33]: Unable to assign [undefined] to QString
 Aug 08 21:46:34 Ilham-PC quickshell[415022]:   WARN quickshell.service.notifications: Could not register notification server at org.freedesktop.Notifications, presumably because one is already registered.
 Aug 08 21:46:34 Ilham-PC quickshell[415022]:   WARN quickshell.service.notifications: Registration will be attempted again if the active service is unregistered.
 Aug 08 21:46:34 Ilham-PC quickshell[415022]:   INFO: Configuration Loaded
-Aug 08 21:46:34 Ilham-PC quickshell[415022]:  DEBUG qml: Restoring wallpaper: $HOME/Pictures/Wallpapers/Images/brain-shell-default-1.png
-Aug 08 21:46:34 Ilham-PC quickshell[415022]:  DEBUG qml: WallpaperService: /home/brain/.local/src/Brain_Shell/src/scripts/wallpaper.sh apply $HOME/Pictures/Wallpapers/Images/brain-shell-default-1.png
 Aug 08 21:46:34 Ilham-PC quickshell[415022]:  DEBUG qml: UpdateService: Loaded config. autoUpdate=true
 Aug 08 21:46:34 Ilham-PC quickshell[415022]:  DEBUG qml: UpdateService: Auto-update enabled. Starting 30s delay timer.
-Aug 08 21:46:34 Ilham-PC quickshell[415022]:  DEBUG qml: WallpaperService failed: 1

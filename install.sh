@@ -60,11 +60,6 @@ printf '{}\n' > "$HOME/.cache/brain-shell/colors.json"
 rm -f "$BRAIN_CFG/src/user_data/update_prefs.json"
 ok "Brain compatibility config installed"
 
-if [[ -d "$REPO_DIR/src/assets/wallpapers" ]]; then
-    mkdir -p "$HOME/Pictures/Wallpapers"
-    cp -an "$REPO_DIR/src/assets/wallpapers/." "$HOME/Pictures/Wallpapers/" || true
-    ok "Wallpapers installed"
-fi
 
 KEY_LUA="$BRAIN_CFG/Brain_ShellKeybinds.lua"
 KEY_CONF="$BRAIN_CFG/Brain_ShellKeybinds.conf"

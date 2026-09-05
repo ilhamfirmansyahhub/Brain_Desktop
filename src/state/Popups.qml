@@ -10,7 +10,6 @@ QtObject {
     property bool notificationsOpen: false
     property bool archMenuOpen: false
     property bool dashboardOpen: false
-    property bool wallpaperOpen: false
     property bool notificationToastOpen: false
     property bool quickOpen: false
     property bool clipboardOpen: false
@@ -25,7 +24,6 @@ QtObject {
     property bool networkTriggerHovered: false
     property bool batteryTriggerHovered: false
     property bool notificationsTriggerHovered: false
-    property bool wallpaperTriggerHovered: false
     property bool quickTriggerHovered: false
 
     property int slideDuration: Theme.animDuration
@@ -58,7 +56,6 @@ QtObject {
         notificationsOpen ||
         archMenuOpen ||
         dashboardOpen ||
-        wallpaperOpen ||
         quickOpen ||
         clipboardOpen
 
@@ -69,7 +66,6 @@ QtObject {
         notificationsOpen = false
         archMenuOpen = false
         dashboardOpen = false
-        wallpaperOpen = false
         quickOpen = false
         clipboardOpen = false
     }
