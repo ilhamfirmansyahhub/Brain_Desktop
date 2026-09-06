@@ -17,6 +17,23 @@ Brain Desktop is designed to sit alongside an existing Hyprland setup rather tha
 - Automatic backups of an existing Brain Desktop config
 - Curated application launcher filtering
 - Fixed, self-contained configuration
+- **No auto-update system, update checker, update popup, or background updater**
+
+## No Update Feature — Intentional DIY Design
+
+Brain Desktop **does not contain an update feature**.
+
+There is no automatic update process, no background update checker, no update notification, no update popup, and no built-in mechanism that pulls changes from the repository. Brain Desktop is intentionally delivered as a fixed configuration rather than as a self-updating desktop shell.
+
+This also means Brain Desktop follows a **DIY / self-reliant** philosophy:
+
+- If something breaks, you are expected to investigate and fix it yourself.
+- If you want to change the appearance or behavior, edit the QML, configuration, scripts, and Hyprland integration yourself.
+- If you want to add a feature, design and implement it yourself.
+- If a future version of the repository contains changes you want, you must manually obtain those changes and apply/reinstall them yourself.
+- Do not expect Brain Desktop to silently repair, replace, or modify your configuration in the background.
+
+In other words: **use your creativity, read the code, experiment, and build the desktop you want.** Brain Desktop is meant to be something you can understand, modify, break, repair, and extend on your own.
 
 ## Installation
 
@@ -101,6 +118,29 @@ These packages are **not uninstalled**; only their launcher entries are filtered
 
 Brain Desktop is shipped as a fixed configuration snapshot. The runtime is intentionally kept self-contained so the installed desktop remains consistent with this build.
 
+Because there is no built-in updater, changing the shell is a manual process. You can inspect the repository, modify the source, test your changes, and deploy them yourself. There is no hidden synchronization mechanism that will overwrite your work.
+
+## Manual modification and troubleshooting
+
+Brain Desktop is intended to be understandable and editable. When you need to modify or repair it, start by inspecting the relevant files under:
+
+```text
+src/
+shell.qml
+configs/
+installer/
+```
+
+Quickshell/QML components, services, scripts, keybinds, and configuration are kept in the repository so they can be studied and changed directly.
+
+A useful workflow is:
+
+```bash
+grep -Rni "keyword" .
+```
+
+Then inspect the relevant QML, Lua, shell, or configuration file, make the change, test it, and restart/reload Brain Desktop as needed.
+
 ## Backups
 
 The installer creates a timestamped backup under:
@@ -110,6 +150,12 @@ The installer creates a timestamped backup under:
 ```
 
 It does not replace the user's Hyprland configuration wholesale.
+
+## Philosophy
+
+Brain Desktop is not intended to be a black box.
+
+It is a starting point for a personal Hyprland desktop: **learn how it works, modify it, experiment with it, and fix it yourself**. There is no automatic updater to make decisions for you, so the responsibility for maintaining and evolving your setup stays with you.
 
 ## License
 
