@@ -57,9 +57,7 @@ cp -a "$REPO_DIR/configs/Brain_Shell/"*.conf "$BRAIN_CFG/" 2>/dev/null || true
 printf '{"configProvider":"lua"}\n' > "$BRAIN_CFG/src/user_data/config_Provider.json"
 printf '{}\n' > "$BRAIN_CFG/src/user_data/keybinds.json"
 printf '{}\n' > "$HOME/.cache/brain-shell/colors.json"
-rm -f "$BRAIN_CFG/src/user_data/update_prefs.json"
 ok "Brain compatibility config installed"
-
 
 KEY_LUA="$BRAIN_CFG/Brain_ShellKeybinds.lua"
 KEY_CONF="$BRAIN_CFG/Brain_ShellKeybinds.conf"
@@ -121,10 +119,6 @@ sudo systemctl enable --now upower 2>/dev/null || true
 [[ -f "$QS_DIR/shell.qml" ]] || die "Brain Desktop shell.qml was not installed."
 [[ -f "$QS_DIR/src/qmldir" ]] || die "Brain Desktop QML module file is missing."
 command -v quickshell >/dev/null 2>&1 || die "quickshell is not available in PATH."
-
-if grep -RniE 'UpdateService|UpdatePopup|autoUpdate' "$QS_DIR" 2>/dev/null; then
-    die "Auto-update references remain in the installed shell."
-fi
 
 ok "Validation passed"
 echo ""
