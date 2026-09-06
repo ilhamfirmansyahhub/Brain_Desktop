@@ -4,6 +4,16 @@ A modular Quickshell/QML desktop shell for Hyprland.
 
 Brain Desktop is designed to sit alongside an existing Hyprland setup rather than replacing it. The installer deploys the shell to the current user, creates a user-level systemd service, and adds Brain's keybind include without overwriting the user's Hyprland configuration.
 
+## Credits & Original Project
+
+Brain Desktop is based on and adapted from **[Brain_Shell](https://github.com/Brainitech/Brain_Shell)** by **Brainitech**.
+
+The original Brain_Shell project provided the foundation and inspiration for this desktop shell. Brain Desktop is a modified, reworked configuration with its own layout, integration, behavior, and design decisions.
+
+Please give credit to the original Brain_Shell project and visit the upstream repository for the original project, development, documentation, and history:
+
+**Original repository:** https://github.com/Brainitech/Brain_Shell
+
 ## Features
 
 - Top desktop bar and dashboard UI
