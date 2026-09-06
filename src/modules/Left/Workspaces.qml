@@ -56,7 +56,7 @@ Rectangle {
     property int pacmanDirection: 1
     property bool pacmanTraveling: false
     property real pacmanMouth: 0
-    readonly property int pacmanSize: Math.max(Theme.wsDotSize + 6, 18)
+    readonly property int pacmanSize: Math.max(Theme.wsDotSize + 2, 16)
 
     readonly property int pacmanDuration: {
         if (pacmanSourceWorkspace < 1 || pacmanTargetWorkspace < 1)
@@ -310,7 +310,7 @@ Rectangle {
 
                 var cx = width / 2
                 var cy = height / 2
-                var r = Math.max(5, Math.min(width, height) * 0.43)
+                var r = Math.max(5, Math.min(width, height) * 0.39)
                 var mouth = 0.16 + 0.30 * root.pacmanMouth
                 var dir = root.pacmanDirection
                 var forward = dir > 0 ? 0 : Math.PI
@@ -326,7 +326,7 @@ Rectangle {
                 ctx.arc(
                     cx + dir * r * 0.25,
                     cy - r * 0.38,
-                    Math.max(0.9, r * 0.11),
+                    Math.max(0.8, r * 0.10),
                     0,
                     Math.PI * 2
                 )
