@@ -105,7 +105,11 @@ Rectangle {
         pacmanStartX = fromX
         pacmanEndX = toX
         pacmanX = fromX
-        pacmanDirection = toX >= fromX ? 1 : -1
+
+        // Workspace 1 is always the home/right-facing position.
+        // This keeps Pac-Man facing right even when returning from workspace 2+.
+        pacmanDirection = toId === 1 ? 1 : (toX >= fromX ? 1 : -1)
+
         pacmanMouth = 0
         pacmanTraveling = true
         pacmanTravel.restart()
@@ -117,6 +121,10 @@ Rectangle {
         pacmanLastWorkspace = pacmanTargetWorkspace
         pacmanX = workspaceCenter(pacmanLastWorkspace)
         pacmanMouth = 0
+
+        // Workspace 1 always rests facing right.
+        if (pacmanLastWorkspace === 1)
+            pacmanDirection = 1
     }
 
     Connections {
@@ -129,6 +137,8 @@ Rectangle {
             if (root.pacmanLastWorkspace < 1) {
                 root.pacmanLastWorkspace = current
                 root.pacmanTargetWorkspace = current
+                if (current === 1)
+                    root.pacmanDirection = 1
                 Qt.callLater(function() {
                     root.pacmanX = root.workspaceCenter(current)
                 })
@@ -149,6 +159,8 @@ Rectangle {
         var current = Hyprland.focusedWorkspace ? Hyprland.focusedWorkspace.id : 1
         pacmanLastWorkspace = current
         pacmanTargetWorkspace = current
+        if (current === 1)
+            pacmanDirection = 1
         Qt.callLater(function() {
             pacmanX = workspaceCenter(current)
         })
