@@ -12,6 +12,7 @@ Rectangle {
     
     property string text: "" 
     property color textColor: Theme.text
+    property int iconSize: 14
     signal clicked()
 
     Text {
@@ -21,7 +22,7 @@ Rectangle {
         // 2. FIX: Changed 'root.hoverHandler.hovered' to 'hover.hovered'
         color: hover.hovered ? Theme.background : root.textColor
         
-        font.pixelSize: 16
+        font.pixelSize: root.iconSize
     }
 
     HoverHandler {
