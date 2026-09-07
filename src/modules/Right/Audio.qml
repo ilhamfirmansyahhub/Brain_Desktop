@@ -40,7 +40,7 @@ Item {
             id: iconText
             text:           root.icon
             color:          hov.hovered ? Theme.active : Theme.text
-            font.pixelSize: 18
+            font.pixelSize: 20
             anchors.verticalCenter: parent.verticalCenter
             Behavior on color { ColorAnimation { duration: 120 } }
         }
