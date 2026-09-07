@@ -93,7 +93,7 @@ Item {
             id: netIcon
             text:           root._netIcon
             color:          root._netColor
-            font.pixelSize: 16
+            font.pixelSize: 18
             anchors.verticalCenter: parent.verticalCenter
             Behavior on color { ColorAnimation { duration: 200 } }
             MouseArea {
