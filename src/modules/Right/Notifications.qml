@@ -6,6 +6,7 @@ import "../../"
 import "../../services/"
 
 IconBtn {
+    iconSize: 16
     text: ShellState.dnd
           ? "󰂛"
           : NotificationService.count > 0 ? "󰂚" : "󰂜"
