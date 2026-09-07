@@ -67,6 +67,7 @@ RowLayout {
     // Tray Toggle Button
     IconBtn {
         Layout.alignment: Qt.AlignVCenter
+        iconSize: 18
         text: trayRow.isOpen ? "" : ""
         onClicked: trayRow.isOpen = !trayRow.isOpen
     }
