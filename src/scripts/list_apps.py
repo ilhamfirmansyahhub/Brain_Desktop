@@ -38,6 +38,7 @@ HIDDEN_DESKTOP_FILES = {
     "compress-video.desktop",
     "install-app.desktop",
     "uuctl.desktop",
+    "org.kde.plasma.emojier.desktop",
 }
 
 HIDDEN_APP_NAMES = {
