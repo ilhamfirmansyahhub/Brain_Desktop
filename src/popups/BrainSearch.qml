@@ -122,15 +122,14 @@ PanelWindow {
                 interactive: true
                 boundsBehavior: Flickable.StopAtBounds
                 pixelAligned: false
-                flickDeceleration: 1600
-                maximumFlickVelocity: 2600
+                flickDeceleration: 1900
+                maximumFlickVelocity: 3000
 
                 currentIndex: root.selectedIndex
 
                 onContentYChanged: {
-                    if (!wheelAnim.running) {
+                    if (!wheelSpring.running)
                         root.wheelTargetY = contentY
-                    }
                 }
 
                 delegate: Rectangle {
@@ -191,19 +190,16 @@ PanelWindow {
 
                         list.cancelFlick()
 
-                        // Smaller increments make the wheel feel less jumpy,
-                        // while the short ease-out keeps it responsive.
-                        var step = delta / 120 * 60
+                        // Small wheel increments + spring physics keep the
+                        // launcher responsive while removing the stepped feel.
+                        var step = delta / 120 * 54
                         var maxY = Math.max(0, list.contentHeight - list.height)
                         root.wheelTargetY = Math.max(
                             0,
                             Math.min(maxY, root.wheelTargetY - step)
                         )
 
-                        wheelAnim.from = list.contentY
-                        wheelAnim.to = root.wheelTargetY
-                        wheelAnim.restart()
-
+                        wheelSpring.restart()
                         event.accepted = true
                     }
                 }
@@ -211,12 +207,15 @@ PanelWindow {
         }
     }
 
-    NumberAnimation {
-        id: wheelAnim
+    SpringAnimation {
+        id: wheelSpring
         target: list
         property: "contentY"
-        duration: 120
-        easing.type: Easing.OutQuint
+        to: root.wheelTargetY
+        spring: 6.5
+        damping: 0.82
+        mass: 0.7
+        epsilon: 0.15
     }
 
     onVisibleChanged: {
