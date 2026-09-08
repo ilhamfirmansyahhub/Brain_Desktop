@@ -119,8 +119,10 @@ PanelWindow {
                 boundsBehavior: Flickable.StopAtBounds
                 pixelAligned: false
 
-                flickDeceleration: 2200
-                maximumFlickVelocity: 18000
+                // Rofi-like: small wheel steps, almost no animation weight,
+                // and native kinetic scrolling available for fast gestures.
+                flickDeceleration: 1200
+                maximumFlickVelocity: 24000
                 currentIndex: root.selectedIndex
 
                 onContentYChanged: {
@@ -184,10 +186,13 @@ PanelWindow {
                             return
                         }
 
+                        // Keep wheel input deliberately light like a launcher.
+                        // High-resolution wheel input stays in pixels; coarse
+                        // wheels use a modest fixed step.
                         if (pixels !== 0) {
-                            delta *= 1.50
+                            delta *= 1.05
                         } else {
-                            delta = delta / 120 * 120
+                            delta = delta / 120 * 64
                         }
 
                         var maxY = Math.max(0, list.contentHeight - list.height)
@@ -204,12 +209,14 @@ PanelWindow {
         }
     }
 
+    // Extremely short smoothing keeps the movement responsive rather than
+    // floaty. The target can be changed continuously while the animation runs.
     SmoothedAnimation {
         id: scrollAnim
         target: list
         property: "contentY"
-        velocity: 18000
-        maximumEasingTime: 0.08
+        velocity: 50000
+        maximumEasingTime: 0.025
     }
 
     onVisibleChanged: {
