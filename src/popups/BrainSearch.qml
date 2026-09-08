@@ -113,11 +113,9 @@ PanelWindow {
                 flickableDirection: Flickable.VerticalFlick
                 pixelAligned: false
 
-                // Ryoku's launcher uses the native ListView/Flickable path:
-                // no custom wheel animation, no contentY interpolation, no spring.
-                // Keep the same lightweight kinetic model here.
-                flickDeceleration: 1500
-                maximumFlickVelocity: 8000
+                // Native Flickable physics, tuned for a lighter and faster feel.
+                flickDeceleration: 900
+                maximumFlickVelocity: 12000
                 currentIndex: root.selectedIndex
 
                 delegate: Rectangle {
