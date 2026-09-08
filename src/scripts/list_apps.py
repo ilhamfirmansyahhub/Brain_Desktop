@@ -56,12 +56,27 @@ HIDDEN_DESKTOP_PREFIXES = (
     "com.system76.Cosmic",
 )
 
+USAGE_FILE = os.path.expanduser("~/.cache/brain-desktop/app_usage.json")
+
+
+def load_usage():
+    try:
+        with open(USAGE_FILE, "r", encoding="utf-8") as f:
+            usage = json.load(f)
+        if isinstance(usage, dict):
+            return usage
+    except (OSError, ValueError, TypeError):
+        pass
+    return {}
+
+
 def main():
     dirs = [
         "/usr/share/applications",
         os.path.expanduser("~/.local/share/applications"),
     ]
 
+    usage = load_usage()
     apps = []
     seen = set()
 
@@ -83,7 +98,6 @@ def main():
                 continue
 
             seen.add(fname)
-
             path = os.path.join(d, fname)
 
             try:
@@ -129,12 +143,14 @@ def main():
                     "exec": exec_,
                     "icon": de.get("Icon", ""),
                     "categories": de.get("Categories", ""),
+                    "usage": int(usage.get(name, 0)),
                 })
 
             except Exception:
                 continue
 
-    apps.sort(key=lambda a: a["name"].lower())
+    # Frequently used applications first. Unused apps remain alphabetical.
+    apps.sort(key=lambda a: (-a["usage"], a["name"].lower()))
 
     print(json.dumps(apps))
 
