@@ -122,8 +122,8 @@ PanelWindow {
                 interactive: true
                 boundsBehavior: Flickable.StopAtBounds
                 pixelAligned: false
-                flickDeceleration: 1400
-                maximumFlickVelocity: 2200
+                flickDeceleration: 1600
+                maximumFlickVelocity: 2600
 
                 currentIndex: root.selectedIndex
 
@@ -191,7 +191,9 @@ PanelWindow {
 
                         list.cancelFlick()
 
-                        var step = delta / 120 * 72
+                        // Smaller increments make the wheel feel less jumpy,
+                        // while the short ease-out keeps it responsive.
+                        var step = delta / 120 * 60
                         var maxY = Math.max(0, list.contentHeight - list.height)
                         root.wheelTargetY = Math.max(
                             0,
@@ -213,8 +215,8 @@ PanelWindow {
         id: wheelAnim
         target: list
         property: "contentY"
-        duration: 150
-        easing.type: Easing.OutCubic
+        duration: 120
+        easing.type: Easing.OutQuint
     }
 
     onVisibleChanged: {
