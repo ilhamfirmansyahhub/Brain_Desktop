@@ -123,9 +123,9 @@ PanelWindow {
                 boundsBehavior: Flickable.StopAtBounds
                 pixelAligned: false
 
-                // High kinetic limits keep fast wheel gestures responsive.
-                flickDeceleration: 2600
-                maximumFlickVelocity: 7000
+                // Aggressive kinetic limits for fast traversal of long lists.
+                flickDeceleration: 3200
+                maximumFlickVelocity: 10000
 
                 currentIndex: root.selectedIndex
 
@@ -190,20 +190,20 @@ PanelWindow {
                             return
                         }
 
-                        list.cancelFlick()
+                        // Keep the current spring moving instead of cancelling it,
+                        // then push the target further on every wheel tick.
+                        root.wheelBoost = Math.min(6.0, root.wheelBoost + 0.85)
 
-                        // Accelerate consecutive wheel ticks so long lists can
-                        // be crossed quickly while each movement remains smooth.
-                        root.wheelBoost = Math.min(2.8, root.wheelBoost + 0.45)
-
-                        var step = delta / 120 * 135 * root.wheelBoost
+                        var step = delta / 120 * 160 * root.wheelBoost
                         var maxY = Math.max(0, list.contentHeight - list.height)
                         root.wheelTargetY = Math.max(
                             0,
                             Math.min(maxY, root.wheelTargetY - step)
                         )
 
-                        wheelSpring.restart()
+                        if (!wheelSpring.running)
+                            wheelSpring.restart()
+
                         wheelBoostReset.restart()
                         event.accepted = true
                     }
@@ -212,11 +212,10 @@ PanelWindow {
         }
     }
 
-    // Very short idle window: sustained scrolling gets acceleration,
-    // isolated wheel ticks stay predictable.
+    // Sustained scrolling ramps up quickly, then resets almost immediately.
     Timer {
         id: wheelBoostReset
-        interval: 80
+        interval: 100
         repeat: false
         onTriggered: root.wheelBoost = 1.0
     }
@@ -226,10 +225,10 @@ PanelWindow {
         target: list
         property: "contentY"
         to: root.wheelTargetY
-        spring: 13
-        damping: 0.88
-        mass: 0.3
-        epsilon: 0.08
+        spring: 18
+        damping: 0.94
+        mass: 0.18
+        epsilon: 0.05
     }
 
     onVisibleChanged: {
