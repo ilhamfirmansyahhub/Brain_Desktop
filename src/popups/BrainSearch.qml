@@ -122,9 +122,8 @@ PanelWindow {
                 boundsBehavior: Flickable.StopAtBounds
                 pixelAligned: false
 
-                // Keep ListView's native kinetic scrolling close to browser behavior.
-                flickDeceleration: 1800
-                maximumFlickVelocity: 9000
+                flickDeceleration: 2200
+                maximumFlickVelocity: 18000
                 currentIndex: root.selectedIndex
 
                 onContentYChanged: {
@@ -188,12 +187,10 @@ PanelWindow {
                             return
                         }
 
-                        // High-resolution input is already in pixels.
-                        // Coarse mouse wheels are converted to a small, browser-like step.
                         if (pixels !== 0) {
-                            delta *= 1.30
+                            delta *= 1.50
                         } else {
-                            delta = delta / 120 * 90
+                            delta = delta / 120 * 120
                         }
 
                         var maxY = Math.max(0, list.contentHeight - list.height)
@@ -202,8 +199,6 @@ PanelWindow {
                             Math.min(maxY, root.wheelTargetY - delta)
                         )
 
-                        // Continuously retarget the same smooth motion instead of
-                        // creating a new animation for every wheel event.
                         scrollAnim.restart()
                         event.accepted = true
                     }
@@ -212,13 +207,12 @@ PanelWindow {
         }
     }
 
-    // Browser-like lightness: high velocity with a short settling window.
     SmoothedAnimation {
         id: scrollAnim
         target: list
         property: "contentY"
-        velocity: 12000
-        maximumEasingTime: 0.065
+        velocity: 18000
+        maximumEasingTime: 0.08
     }
 
     onVisibleChanged: {
