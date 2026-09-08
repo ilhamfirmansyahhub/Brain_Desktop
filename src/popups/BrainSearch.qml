@@ -123,9 +123,9 @@ PanelWindow {
                 boundsBehavior: Flickable.StopAtBounds
                 pixelAligned: false
 
-                // Aggressive kinetic limits for fast traversal of long lists.
-                flickDeceleration: 3200
-                maximumFlickVelocity: 10000
+                // Lightweight, high-speed kinetic scrolling.
+                flickDeceleration: 3800
+                maximumFlickVelocity: 14000
 
                 currentIndex: root.selectedIndex
 
@@ -190,11 +190,11 @@ PanelWindow {
                             return
                         }
 
-                        // Keep the current spring moving instead of cancelling it,
-                        // then push the target further on every wheel tick.
-                        root.wheelBoost = Math.min(6.0, root.wheelBoost + 0.85)
+                        // Rapid wheel input builds momentum rather than restarting
+                        // the animation, making long lists traverse very quickly.
+                        root.wheelBoost = Math.min(10.0, root.wheelBoost + 1.2)
 
-                        var step = delta / 120 * 160 * root.wheelBoost
+                        var step = delta / 120 * 250 * root.wheelBoost
                         var maxY = Math.max(0, list.contentHeight - list.height)
                         root.wheelTargetY = Math.max(
                             0,
@@ -212,23 +212,24 @@ PanelWindow {
         }
     }
 
-    // Sustained scrolling ramps up quickly, then resets almost immediately.
     Timer {
         id: wheelBoostReset
-        interval: 100
+        interval: 75
         repeat: false
         onTriggered: root.wheelBoost = 1.0
     }
 
+    // Low mass + strong spring = quick response; moderate damping removes
+    // the heavy/floaty feeling while keeping the motion smooth.
     SpringAnimation {
         id: wheelSpring
         target: list
         property: "contentY"
         to: root.wheelTargetY
-        spring: 18
-        damping: 0.94
-        mass: 0.18
-        epsilon: 0.05
+        spring: 28
+        damping: 0.86
+        mass: 0.10
+        epsilon: 0.08
     }
 
     onVisibleChanged: {
