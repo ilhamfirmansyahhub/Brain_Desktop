@@ -9,7 +9,6 @@ PanelWindow {
 
     property int selectedIndex: 0
     property real wheelTargetY: 0
-    property real wheelBoost: 1.0
 
     visible: BrainSearchService.open
 
@@ -123,8 +122,9 @@ PanelWindow {
                 boundsBehavior: Flickable.StopAtBounds
                 pixelAligned: false
 
-                flickDeceleration: 4200
-                maximumFlickVelocity: 16000
+                // Keep ListView's native kinetic scrolling close to browser behavior.
+                flickDeceleration: 1800
+                maximumFlickVelocity: 9000
                 currentIndex: root.selectedIndex
 
                 onContentYChanged: {
@@ -179,8 +179,8 @@ PanelWindow {
                     id: wheelHandler
 
                     onWheel: function(event) {
-                        var angle = event.angleDelta.y
                         var pixels = event.pixelDelta.y
+                        var angle = event.angleDelta.y
                         var delta = pixels !== 0 ? pixels : angle
 
                         if (delta === 0) {
@@ -188,23 +188,23 @@ PanelWindow {
                             return
                         }
 
-                        // Treat high-resolution wheel input as continuous pixels,
-                        // matching the light, fluid feeling of browser scrolling.
-                        if (pixels !== 0)
-                            delta *= 1.15
-                        else
-                            delta = delta / 120 * 140
+                        // High-resolution input is already in pixels.
+                        // Coarse mouse wheels are converted to a small, browser-like step.
+                        if (pixels !== 0) {
+                            delta *= 1.30
+                        } else {
+                            delta = delta / 120 * 90
+                        }
 
-                        root.wheelBoost = Math.min(3.2, root.wheelBoost + 0.18)
-
-                        var step = delta * root.wheelBoost
                         var maxY = Math.max(0, list.contentHeight - list.height)
                         root.wheelTargetY = Math.max(
                             0,
-                            Math.min(maxY, root.wheelTargetY - step)
+                            Math.min(maxY, root.wheelTargetY - delta)
                         )
 
-                        wheelBoostReset.restart()
+                        // Continuously retarget the same smooth motion instead of
+                        // creating a new animation for every wheel event.
+                        scrollAnim.restart()
                         event.accepted = true
                     }
                 }
@@ -212,21 +212,13 @@ PanelWindow {
         }
     }
 
-    Timer {
-        id: wheelBoostReset
-        interval: 85
-        repeat: false
-        onTriggered: root.wheelBoost = 1.0
-    }
-
-    // Unlike a spring, SmoothedAnimation retargets the same motion continuously.
-    // This prevents the tiny stops/jerks caused by restarting an animation on each tick.
+    // Browser-like lightness: high velocity with a short settling window.
     SmoothedAnimation {
         id: scrollAnim
         target: list
         property: "contentY"
-        velocity: 9000
-        maximumEasingTime: 0.09
+        velocity: 12000
+        maximumEasingTime: 0.065
     }
 
     onVisibleChanged: {
@@ -235,7 +227,6 @@ PanelWindow {
                 search.text = ""
                 root.selectedIndex = 0
                 root.wheelTargetY = 0
-                root.wheelBoost = 1.0
                 list.contentY = 0
                 scrollAnim.stop()
                 search.forceActiveFocus()
