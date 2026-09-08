@@ -122,8 +122,9 @@ PanelWindow {
                 boundsBehavior: Flickable.StopAtBounds
                 pixelAligned: false
 
-                flickDeceleration: 2200
-                maximumFlickVelocity: 18000
+                // Light, browser-like kinetic feel.
+                flickDeceleration: 1700
+                maximumFlickVelocity: 22000
                 currentIndex: root.selectedIndex
 
                 onContentYChanged: {
@@ -187,10 +188,12 @@ PanelWindow {
                             return
                         }
 
+                        // Keep each wheel step small. The high animation velocity
+                        // makes the movement feel light instead of heavy.
                         if (pixels !== 0) {
-                            delta *= 1.50
+                            delta *= 1.12
                         } else {
-                            delta = delta / 120 * 120
+                            delta = delta / 120 * 72
                         }
 
                         var maxY = Math.max(0, list.contentHeight - list.height)
@@ -211,8 +214,9 @@ PanelWindow {
         id: scrollAnim
         target: list
         property: "contentY"
-        velocity: 18000
-        maximumEasingTime: 0.08
+        // Much higher velocity + tiny easing window = light and immediate.
+        velocity: 30000
+        maximumEasingTime: 0.035
     }
 
     onVisibleChanged: {
