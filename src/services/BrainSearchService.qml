@@ -5,155 +5,104 @@ import Quickshell
 import Quickshell.Io
 import "../"
 
-
 QtObject {
-
     id: root
 
-
     property bool open: false
-
     property string statusFile: "/tmp/brain_search_status"
-    
     property var apps: []
-
     property string query: ""
 
-
-
     readonly property var results: {
-
         var q = query.toLowerCase().trim()
-
         if (q === "")
             return apps
 
-
-        return apps.filter(function(app){
-
-            return app.name
-                .toLowerCase()
-                .includes(q)
-
+        return apps.filter(function(app) {
+            return app.name.toLowerCase().includes(q)
         })
-
     }
 
-
-
     property var appLoader: Process {
-
         command: [
             "python3",
             Quickshell.shellDir + "/src/scripts/list_apps.py"
         ]
-
-
         running: false
-
 
         stdout: StdioCollector {
-
             onStreamFinished: {
-
                 try {
-
                     root.apps = JSON.parse(text)
-
-                }
-
-                catch(e) {
-
+                } catch(e) {
                     root.apps = []
-
                 }
-
             }
-
         }
-
     }
-
-
 
     property var launcher: Process {
-
         command: []
-
         running: false
-
     }
 
-    function saveStatus(value){
+    property var usageRecorder: Process {
+        command: []
+        running: false
+    }
 
+    function saveStatus(value) {
         var p = Qt.createQmlObject(
-        '
-        import Quickshell.Io
-        Process {}
-        ',
-        root
-    )
+            'import Quickshell.Io; Process {}',
+            root
+        )
 
-    p.command = [
-        "bash",
-        "-c",
-        "echo " + value + " > /tmp/brain_search_status"
-    ]
+        p.command = [
+            "bash",
+            "-c",
+            "echo " + value + " > /tmp/brain_search_status"
+        ]
+        p.running = true
+    }
 
-    p.running = true
-
-}
-
-    function show(){
-
+    function show() {
         root.open = true
-
         saveStatus("open")
-
         root.query = ""
-
-
         appLoader.running = false
-
         appLoader.running = true
-
     }
 
-
-
-    function hide(){
-
+    function hide() {
         root.open = false
-
         saveStatus("closed")
-
         root.query = ""
-
     }
 
-   function type(char){
+    function type(char) {
+        root.query += char
+    }
 
-       root.query += char
-
-   }
-
-    function launch(exec){
+    function launch(exec, name) {
+        // Record the selection immediately so frequently used apps rise to the top.
+        if (name) {
+            usageRecorder.command = [
+                "python3",
+                Quickshell.shellDir + "/src/scripts/record_app_usage.py",
+                name
+            ]
+            usageRecorder.running = false
+            usageRecorder.running = true
+        }
 
         launcher.command = [
             "bash",
             "-c",
             "setsid " + exec + " >/dev/null 2>&1 &"
         ]
-
-
         launcher.running = false
-
         launcher.running = true
 
-
         hide()
-
     }
-
-
 }
