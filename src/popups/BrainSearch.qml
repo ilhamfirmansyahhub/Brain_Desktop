@@ -9,6 +9,7 @@ PanelWindow {
 
     property int selectedIndex: 0
     property real wheelTargetY: 0
+    property real wheelBoost: 1.0
 
     visible: BrainSearchService.open
 
@@ -122,9 +123,9 @@ PanelWindow {
                 boundsBehavior: Flickable.StopAtBounds
                 pixelAligned: false
 
-                // Faster kinetic scrolling for long lists.
-                flickDeceleration: 2200
-                maximumFlickVelocity: 4000
+                // High kinetic limits keep fast wheel gestures responsive.
+                flickDeceleration: 2600
+                maximumFlickVelocity: 7000
 
                 currentIndex: root.selectedIndex
 
@@ -191,9 +192,11 @@ PanelWindow {
 
                         list.cancelFlick()
 
-                        // Large wheel steps + tight spring tracking let the
-                        // launcher cover the list quickly without feeling choppy.
-                        var step = delta / 120 * 100
+                        // Accelerate consecutive wheel ticks so long lists can
+                        // be crossed quickly while each movement remains smooth.
+                        root.wheelBoost = Math.min(2.8, root.wheelBoost + 0.45)
+
+                        var step = delta / 120 * 135 * root.wheelBoost
                         var maxY = Math.max(0, list.contentHeight - list.height)
                         root.wheelTargetY = Math.max(
                             0,
@@ -201,6 +204,7 @@ PanelWindow {
                         )
 
                         wheelSpring.restart()
+                        wheelBoostReset.restart()
                         event.accepted = true
                     }
                 }
@@ -208,15 +212,24 @@ PanelWindow {
         }
     }
 
+    // Very short idle window: sustained scrolling gets acceleration,
+    // isolated wheel ticks stay predictable.
+    Timer {
+        id: wheelBoostReset
+        interval: 80
+        repeat: false
+        onTriggered: root.wheelBoost = 1.0
+    }
+
     SpringAnimation {
         id: wheelSpring
         target: list
         property: "contentY"
         to: root.wheelTargetY
-        spring: 9
-        damping: 0.78
-        mass: 0.45
-        epsilon: 0.1
+        spring: 13
+        damping: 0.88
+        mass: 0.3
+        epsilon: 0.08
     }
 
     onVisibleChanged: {
@@ -225,6 +238,7 @@ PanelWindow {
                 search.text = ""
                 root.selectedIndex = 0
                 root.wheelTargetY = 0
+                root.wheelBoost = 1.0
                 list.contentY = 0
                 search.forceActiveFocus()
             })
