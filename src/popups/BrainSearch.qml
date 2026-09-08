@@ -97,11 +97,8 @@ PanelWindow {
 
                     Keys.onReturnPressed: {
                         if (BrainSearchService.results.length > 0) {
-                            BrainSearchService.launch(
-                                BrainSearchService
-                                .results[root.selectedIndex]
-                                .exec
-                            )
+                            var app = BrainSearchService.results[root.selectedIndex]
+                            BrainSearchService.launch(app.exec, app.name)
                         }
                     }
 
@@ -122,9 +119,8 @@ PanelWindow {
                 boundsBehavior: Flickable.StopAtBounds
                 pixelAligned: false
 
-                // Light, browser-like kinetic feel.
-                flickDeceleration: 1700
-                maximumFlickVelocity: 22000
+                flickDeceleration: 2200
+                maximumFlickVelocity: 18000
                 currentIndex: root.selectedIndex
 
                 onContentYChanged: {
@@ -152,7 +148,7 @@ PanelWindow {
 
                         onClicked: {
                             root.selectedIndex = index
-                            BrainSearchService.launch(modelData.exec)
+                            BrainSearchService.launch(modelData.exec, modelData.name)
                         }
                     }
 
@@ -188,12 +184,10 @@ PanelWindow {
                             return
                         }
 
-                        // Keep each wheel step small. The high animation velocity
-                        // makes the movement feel light instead of heavy.
                         if (pixels !== 0) {
-                            delta *= 1.12
+                            delta *= 1.50
                         } else {
-                            delta = delta / 120 * 72
+                            delta = delta / 120 * 120
                         }
 
                         var maxY = Math.max(0, list.contentHeight - list.height)
@@ -214,9 +208,8 @@ PanelWindow {
         id: scrollAnim
         target: list
         property: "contentY"
-        // Much higher velocity + tiny easing window = light and immediate.
-        velocity: 30000
-        maximumEasingTime: 0.035
+        velocity: 18000
+        maximumEasingTime: 0.08
     }
 
     onVisibleChanged: {
