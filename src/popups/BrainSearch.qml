@@ -123,14 +123,12 @@ PanelWindow {
                 boundsBehavior: Flickable.StopAtBounds
                 pixelAligned: false
 
-                // Lightweight, high-speed kinetic scrolling.
-                flickDeceleration: 3800
-                maximumFlickVelocity: 14000
-
+                flickDeceleration: 4200
+                maximumFlickVelocity: 16000
                 currentIndex: root.selectedIndex
 
                 onContentYChanged: {
-                    if (!wheelSpring.running)
+                    if (!scrollAnim.running)
                         root.wheelTargetY = contentY
                 }
 
@@ -181,28 +179,30 @@ PanelWindow {
                     id: wheelHandler
 
                     onWheel: function(event) {
-                        var delta = event.angleDelta.y
-                        if (delta === 0)
-                            delta = event.pixelDelta.y
+                        var angle = event.angleDelta.y
+                        var pixels = event.pixelDelta.y
+                        var delta = pixels !== 0 ? pixels : angle
 
                         if (delta === 0) {
                             event.accepted = true
                             return
                         }
 
-                        // Rapid wheel input builds momentum rather than restarting
-                        // the animation, making long lists traverse very quickly.
-                        root.wheelBoost = Math.min(10.0, root.wheelBoost + 1.2)
+                        // Treat high-resolution wheel input as continuous pixels,
+                        // matching the light, fluid feeling of browser scrolling.
+                        if (pixels !== 0)
+                            delta *= 1.15
+                        else
+                            delta = delta / 120 * 140
 
-                        var step = delta / 120 * 250 * root.wheelBoost
+                        root.wheelBoost = Math.min(3.2, root.wheelBoost + 0.18)
+
+                        var step = delta * root.wheelBoost
                         var maxY = Math.max(0, list.contentHeight - list.height)
                         root.wheelTargetY = Math.max(
                             0,
                             Math.min(maxY, root.wheelTargetY - step)
                         )
-
-                        if (!wheelSpring.running)
-                            wheelSpring.restart()
 
                         wheelBoostReset.restart()
                         event.accepted = true
@@ -214,22 +214,19 @@ PanelWindow {
 
     Timer {
         id: wheelBoostReset
-        interval: 75
+        interval: 85
         repeat: false
         onTriggered: root.wheelBoost = 1.0
     }
 
-    // Low mass + strong spring = quick response; moderate damping removes
-    // the heavy/floaty feeling while keeping the motion smooth.
-    SpringAnimation {
-        id: wheelSpring
+    // Unlike a spring, SmoothedAnimation retargets the same motion continuously.
+    // This prevents the tiny stops/jerks caused by restarting an animation on each tick.
+    SmoothedAnimation {
+        id: scrollAnim
         target: list
         property: "contentY"
-        to: root.wheelTargetY
-        spring: 28
-        damping: 0.86
-        mass: 0.10
-        epsilon: 0.08
+        velocity: 9000
+        maximumEasingTime: 0.09
     }
 
     onVisibleChanged: {
@@ -240,6 +237,7 @@ PanelWindow {
                 root.wheelTargetY = 0
                 root.wheelBoost = 1.0
                 list.contentY = 0
+                scrollAnim.stop()
                 search.forceActiveFocus()
             })
         }
