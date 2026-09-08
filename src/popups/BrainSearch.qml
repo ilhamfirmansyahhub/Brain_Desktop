@@ -29,9 +29,7 @@ PanelWindow {
 
     MouseArea {
         anchors.fill: parent
-        onClicked: {
-            BrainSearchService.hide()
-        }
+        onClicked: BrainSearchService.hide()
     }
 
     Rectangle {
@@ -47,7 +45,7 @@ PanelWindow {
             0.96
         )
         border.width: 1
-        border.color: Qt.rgba(1,1,1,0.12)
+        border.color: Qt.rgba(1, 1, 1, 0.12)
 
         Column {
             anchors.fill: parent
@@ -65,7 +63,7 @@ PanelWindow {
                 width: parent.width
                 height: 46
                 radius: 12
-                color: Qt.rgba(1,1,1,0.06)
+                color: Qt.rgba(1, 1, 1, 0.06)
 
                 TextInput {
                     id: search
@@ -81,17 +79,15 @@ PanelWindow {
                     }
 
                     Keys.onDownPressed: {
-                        if (
-                            root.selectedIndex <
-                            BrainSearchService.results.length - 1
-                        ) {
+                        if (root.selectedIndex < BrainSearchService.results.length - 1)
                             root.selectedIndex++
-                        }
+                        list.positionViewAtIndex(root.selectedIndex, ListView.Contain)
                     }
 
                     Keys.onUpPressed: {
                         if (root.selectedIndex > 0)
                             root.selectedIndex--
+                        list.positionViewAtIndex(root.selectedIndex, ListView.Contain)
                     }
 
                     Keys.onReturnPressed: {
@@ -101,9 +97,7 @@ PanelWindow {
                         }
                     }
 
-                    Keys.onEscapePressed: {
-                        BrainSearchService.hide()
-                    }
+                    Keys.onEscapePressed: BrainSearchService.hide()
                 }
             }
 
@@ -116,12 +110,14 @@ PanelWindow {
                 clip: true
                 interactive: true
                 boundsBehavior: Flickable.StopAtBounds
+                flickableDirection: Flickable.VerticalFlick
                 pixelAligned: false
 
-                // Let QML's native Flickable physics handle movement.
-                // Wheel input is converted directly into flick velocity.
-                flickDeceleration: 1200
-                maximumFlickVelocity: 24000
+                // Ryoku's launcher uses the native ListView/Flickable path:
+                // no custom wheel animation, no contentY interpolation, no spring.
+                // Keep the same lightweight kinetic model here.
+                flickDeceleration: 1500
+                maximumFlickVelocity: 8000
                 currentIndex: root.selectedIndex
 
                 delegate: Rectangle {
@@ -129,8 +125,7 @@ PanelWindow {
                     height: 44
                     radius: 10
 
-                    color:
-                        index === root.selectedIndex
+                    color: index === root.selectedIndex
                         ? Qt.rgba(
                             Theme.active.r,
                             Theme.active.g,
@@ -141,7 +136,6 @@ PanelWindow {
 
                     MouseArea {
                         anchors.fill: parent
-
                         onClicked: {
                             root.selectedIndex = index
                             BrainSearchService.launch(modelData.exec, modelData.name)
@@ -164,32 +158,6 @@ PanelWindow {
                             color: Theme.text
                             font.pixelSize: 14
                         }
-                    }
-                }
-
-                WheelHandler {
-                    id: wheelHandler
-
-                    onWheel: function(event) {
-                        var pixels = event.pixelDelta.y
-                        var angle = event.angleDelta.y
-
-                        if (pixels === 0 && angle === 0) {
-                            event.accepted = true
-                            return
-                        }
-
-                        // Keep trackpad/high-resolution wheel input continuous.
-                        // For a regular wheel, convert one notch into velocity.
-                        var velocity
-                        if (pixels !== 0) {
-                            velocity = -pixels * 85
-                        } else {
-                            velocity = -(angle / 120) * 4200
-                        }
-
-                        list.flick(0, velocity)
-                        event.accepted = true
                     }
                 }
             }
