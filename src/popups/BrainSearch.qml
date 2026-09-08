@@ -91,9 +91,8 @@ PanelWindow {
                     }
 
                     Keys.onUpPressed: {
-                        if (root.selectedIndex > 0) {
+                        if (root.selectedIndex > 0)
                             root.selectedIndex--
-                        }
                     }
 
                     Keys.onReturnPressed: {
@@ -122,8 +121,10 @@ PanelWindow {
                 interactive: true
                 boundsBehavior: Flickable.StopAtBounds
                 pixelAligned: false
-                flickDeceleration: 1900
-                maximumFlickVelocity: 3000
+
+                // Faster kinetic scrolling for long lists.
+                flickDeceleration: 2200
+                maximumFlickVelocity: 4000
 
                 currentIndex: root.selectedIndex
 
@@ -190,9 +191,9 @@ PanelWindow {
 
                         list.cancelFlick()
 
-                        // Small wheel increments + spring physics keep the
-                        // launcher responsive while removing the stepped feel.
-                        var step = delta / 120 * 54
+                        // Large wheel steps + tight spring tracking let the
+                        // launcher cover the list quickly without feeling choppy.
+                        var step = delta / 120 * 100
                         var maxY = Math.max(0, list.contentHeight - list.height)
                         root.wheelTargetY = Math.max(
                             0,
@@ -212,10 +213,10 @@ PanelWindow {
         target: list
         property: "contentY"
         to: root.wheelTargetY
-        spring: 6.5
-        damping: 0.82
-        mass: 0.7
-        epsilon: 0.15
+        spring: 9
+        damping: 0.78
+        mass: 0.45
+        epsilon: 0.1
     }
 
     onVisibleChanged: {
