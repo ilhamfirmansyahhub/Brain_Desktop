@@ -8,7 +8,6 @@ PanelWindow {
     id: root
 
     property int selectedIndex: 0
-    property real wheelTargetY: 0
 
     visible: BrainSearchService.open
 
@@ -119,16 +118,11 @@ PanelWindow {
                 boundsBehavior: Flickable.StopAtBounds
                 pixelAligned: false
 
-                // Rofi-like: small wheel steps, almost no animation weight,
-                // and native kinetic scrolling available for fast gestures.
+                // Let QML's native Flickable physics handle movement.
+                // Wheel input is converted directly into flick velocity.
                 flickDeceleration: 1200
                 maximumFlickVelocity: 24000
                 currentIndex: root.selectedIndex
-
-                onContentYChanged: {
-                    if (!scrollAnim.running)
-                        root.wheelTargetY = contentY
-                }
 
                 delegate: Rectangle {
                     width: list.width
@@ -179,29 +173,22 @@ PanelWindow {
                     onWheel: function(event) {
                         var pixels = event.pixelDelta.y
                         var angle = event.angleDelta.y
-                        var delta = pixels !== 0 ? pixels : angle
 
-                        if (delta === 0) {
+                        if (pixels === 0 && angle === 0) {
                             event.accepted = true
                             return
                         }
 
-                        // Keep wheel input deliberately light like a launcher.
-                        // High-resolution wheel input stays in pixels; coarse
-                        // wheels use a modest fixed step.
+                        // Keep trackpad/high-resolution wheel input continuous.
+                        // For a regular wheel, convert one notch into velocity.
+                        var velocity
                         if (pixels !== 0) {
-                            delta *= 1.05
+                            velocity = -pixels * 85
                         } else {
-                            delta = delta / 120 * 64
+                            velocity = -(angle / 120) * 4200
                         }
 
-                        var maxY = Math.max(0, list.contentHeight - list.height)
-                        root.wheelTargetY = Math.max(
-                            0,
-                            Math.min(maxY, root.wheelTargetY - delta)
-                        )
-
-                        scrollAnim.restart()
+                        list.flick(0, velocity)
                         event.accepted = true
                     }
                 }
@@ -209,24 +196,13 @@ PanelWindow {
         }
     }
 
-    // Extremely short smoothing keeps the movement responsive rather than
-    // floaty. The target can be changed continuously while the animation runs.
-    SmoothedAnimation {
-        id: scrollAnim
-        target: list
-        property: "contentY"
-        velocity: 50000
-        maximumEasingTime: 0.025
-    }
-
     onVisibleChanged: {
         if (visible) {
             Qt.callLater(function() {
                 search.text = ""
                 root.selectedIndex = 0
-                root.wheelTargetY = 0
+                list.cancelFlick()
                 list.contentY = 0
-                scrollAnim.stop()
                 search.forceActiveFocus()
             })
         }
