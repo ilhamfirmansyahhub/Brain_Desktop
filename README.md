@@ -71,6 +71,43 @@ The installer:
 
 The installer is intentionally run as the normal user. It uses `sudo` only for system package and service operations.
 
+## Uninstallation
+
+To completely remove Brain Desktop from the current user account, run:
+
+```bash
+systemctl --user disable --now brain-desktop.service 2>/dev/null || true
+rm -f ~/.config/systemd/user/brain-desktop.service
+rm -rf ~/.config/quickshell/brain-desktop
+rm -rf ~/.config/Brain_Shell
+systemctl --user daemon-reload
+```
+
+The commands above remove the Brain Desktop shell, its user-level systemd service, and the Brain-specific compatibility/keybind directory.
+
+### Remove Brain keybinds from Hyprland
+
+Brain Desktop adds its keybind include to the user's Hyprland configuration instead of replacing the whole config. After uninstalling, remove the Brain Desktop keybind include line from your Hyprland config if it is still present.
+
+You can locate it with:
+
+```bash
+grep -RniE 'Brain_Shell|Brain Desktop|brain-desktop' ~/.config/hypr 2>/dev/null
+```
+
+Remove only the Brain Desktop include/keybind entry. Do not delete unrelated Hyprland configuration.
+
+### Remove the repository clone
+
+If you no longer need the source directory:
+
+```bash
+cd ~
+rm -rf ~/Brain_Desktop
+```
+
+The uninstall commands do **not** remove your system packages or unrelated Hyprland configuration. They only remove Brain Desktop's installed files and integration.
+
 ## Requirements
 
 - Arch Linux or an Arch-based distribution
